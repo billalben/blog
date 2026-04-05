@@ -62,3 +62,16 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded request bo
     }
   }
 })();
+
+const handleServerShutdown = async () => {
+  try {
+    console.log("Server shoutdown");
+    process.exit(0); // Exit with success code
+  } catch (error) {
+    console.error("Error during server shutdown:", error);
+  }
+};
+
+// Handle graceful shutdown on SIGINT and SIGTERM signals
+process.on("SIGTERM", handleServerShutdown);
+process.on("SIGINT", handleServerShutdown);
