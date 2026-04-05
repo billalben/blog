@@ -10,6 +10,7 @@ import v1Routes from "./routes/v1";
 import config from "@/config";
 import limiter from "@/lib/express-rate-limit";
 import { connectToDatabase, disconnectFromDatabase } from "@/lib/mongoose";
+import logger from "./lib/windston";
 
 // Create Express app
 const app = express();
@@ -25,7 +26,7 @@ const corsOptions: CorsOptions = {
       callback(new Error(`Origin ${origin} is not allowed by CORS`), false);
     }
 
-    // console.log(`CORS error: ${origin} is not allowed by CORS`);
+    logger.warn(`CORS error: ${origin} is not allowed by CORS`);
   },
   methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
   allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
@@ -55,10 +56,10 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded request bo
     app.use("/api/v1", v1Routes);
 
     app.listen(config.PORT, () => {
-      console.log(`Server running on http://localhost:${config.PORT}`);
+      logger.info(`Server running on http://localhost:${config.PORT}`);
     });
   } catch (error) {
-    console.error("Error starting server:", error);
+    logger.error("Error starting server:", error);
 
     if (config.NODE_ENV === "production") {
       process.exit(1); // Exit with failure code in production
@@ -69,10 +70,10 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded request bo
 const handleServerShutdown = async () => {
   try {
     await disconnectFromDatabase(); // Ensure database connection is closed
-    console.log("Server shoutdown");
+    logger.info("Server shutdown complete. Exiting process.");
     process.exit(0); // Exit with success code
   } catch (error) {
-    console.error("Error during server shutdown:", error);
+    logger.error("Error during server shutdown:", error);
   }
 };
 

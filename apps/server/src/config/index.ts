@@ -7,6 +7,7 @@ const config = {
   NODE_ENV: process.env.NODE_ENV || "development",
   WHITELISTED_ORIGINS: process.env.WHITELISTED_ORIGINS?.split(",") || [],
   MONGO_URI: process.env.MONGO_URI,
+  LOG_LEVEL: process.env.LOG_LEVEL || "info",
 };
 
 export default config;
