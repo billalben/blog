@@ -5,6 +5,8 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 import helmet from "helmet";
 
+import v1Routes from "./routes/v1";
+
 import config from "@/config";
 import limiter from "@/lib/express-rate-limit";
 
@@ -12,7 +14,7 @@ import limiter from "@/lib/express-rate-limit";
 const app = express();
 
 const corsOptions: CorsOptions = {
-  origin: (origin, callback) => {
+  origin(origin, callback) {
     if (
       config.NODE_ENV === "development" ||
       config.WHITELISTED_ORIGINS.includes(origin || "")
@@ -22,17 +24,16 @@ const corsOptions: CorsOptions = {
       callback(new Error(`Origin ${origin} is not allowed by CORS`), false);
     }
 
-    console.log(`CORS error: ${origin} is not allowed by CORS`);
+    // console.log(`CORS error: ${origin} is not allowed by CORS`);
   },
   methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
   allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
 };
 
 // Use CORS middleware with the defined options
-app.use(cors(corsOptions));
 
 // Middleware
-app.use(cors()); // Enable CORS for all routes
+app.use(cors(corsOptions));
 app.use(express.json()); // Parse JSON request bodies
 app.use(cookieParser()); // Parse cookies
 app.use(
@@ -48,9 +49,7 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded request bo
 (async () => {
   // Initialize database connection here if needed
   try {
-    app.get("/", (req, res) => {
-      res.send("Hello from TypeScript + Express 🚀");
-    });
+    app.use("/api/v1", v1Routes);
 
     app.listen(config.PORT, () => {
       console.log(`Server running on http://localhost:${config.PORT}`);
