@@ -9,6 +9,7 @@ import v1Routes from "./routes/v1";
 
 import config from "@/config";
 import limiter from "@/lib/express-rate-limit";
+import { connectToDatabase, disconnectFromDatabase } from "@/lib/mongoose";
 
 // Create Express app
 const app = express();
@@ -49,6 +50,8 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded request bo
 (async () => {
   // Initialize database connection here if needed
   try {
+    await connectToDatabase(); // Connect to the database before starting the server
+
     app.use("/api/v1", v1Routes);
 
     app.listen(config.PORT, () => {
@@ -65,6 +68,7 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded request bo
 
 const handleServerShutdown = async () => {
   try {
+    await disconnectFromDatabase(); // Ensure database connection is closed
     console.log("Server shoutdown");
     process.exit(0); // Exit with success code
   } catch (error) {
