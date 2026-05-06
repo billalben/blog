@@ -15,10 +15,16 @@ export const generateRefreshToken = (userId: Types.ObjectId) => {
   });
 };
 
-export const verifyAccessToken = (token: string) => {
+export const verifyAccessToken = (token: string | undefined) => {
+  if (!token) {
+    throw new Error("Access token is missing");
+  }
   return jwt.verify(token, config.JWT_ACCESS_SECRET);
 };
 
-export const verifyRefreshToken = (token: string) => {
+export const verifyRefreshToken = (token: string | undefined) => {
+  if (!token) {
+    throw new Error("Refresh token is missing");
+  }
   return jwt.verify(token, config.JWT_REFRESH_SECRET);
 };

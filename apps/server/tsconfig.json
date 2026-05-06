@@ -5,7 +5,7 @@
     "rootDir": "./src",
     "outDir": "./dist",
 
-    "removeComments": false,
+    "removeComments": true,
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
@@ -44,9 +44,19 @@
     // "moduleDetection": "force",
     // "skipLibCheck": true
 
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+
+    // "typeRoots": ["./src/@types"]
+    "typeRoots": ["./src/@types", "./node_modules/@types"]
+  },
+  "ts-node": {
+    "files": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
