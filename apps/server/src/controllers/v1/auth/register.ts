@@ -10,7 +10,7 @@ import { generateAccessToken, generateRefreshToken } from "@/lib/jwt";
 
 type TUserData = Pick<IUser, "email" | "password" | "role">;
 
-export const register = async (req: Request, res: Response) => {
+const register = async (req: Request, res: Response) => {
   const { email, password, role }: TUserData = req.body;
 
   if (role === "admin" && !config.WHITELIST_ADMINS_MAIL.includes(email)) {
@@ -68,3 +68,5 @@ export const register = async (req: Request, res: Response) => {
     });
   }
 };
+
+export default register;
