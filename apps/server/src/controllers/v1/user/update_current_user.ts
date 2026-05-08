@@ -1,23 +1,13 @@
 import type { Request, Response } from "express";
 
 import logger from "@/lib/winston";
-import User, { IUser } from "@/models/user";
-
-// all optional
-type TUpdateCurrentUserBody = Partial<IUser>;
+import User from "@/models/user";
 
 const updateCurrentUser = async (req: Request, res: Response) => {
   try {
     const userId = req.userId;
-
-    const {
-      email,
-      password,
-      username,
-      firstName,
-      lastName,
-      socialLinks,
-    }: TUpdateCurrentUserBody = req.body;
+    const { email, password, username, firstName, lastName, socialLinks } =
+      req.body;
 
     const user = await User.findById(userId).select("+password -__v").exec();
 
@@ -57,6 +47,17 @@ const updateCurrentUser = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
+    if (
+      error instanceof Error &&
+      (error as Error & { cause?: { code?: number } }).cause?.code === 11000
+    ) {
+      res.status(409).json({
+        status: "error",
+        message: "A user with this email or username already exists",
+      });
+      return;
+    }
+
     logger.error("Error updating current user:", error);
 
     res.status(500).json({

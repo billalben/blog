@@ -25,7 +25,7 @@ describe("GET /api/v1/", () => {
 describe("POST /api/v1/auth/register", () => {
   const validUser = {
     email: "test@example.com",
-    password: "password123",
+    password: "Test1234!",
   };
 
   beforeEach(async () => {
@@ -48,7 +48,7 @@ describe("POST /api/v1/auth/register", () => {
   it("returns 400 when email is missing", async () => {
     const res = await request(app)
       .post("/api/v1/auth/register")
-      .send({ password: "password123" });
+      .send({ password: "Test1234!" });
 
     expect(res.status).toBe(400);
     expect(res.body.status).toBe("error");
@@ -78,7 +78,7 @@ describe("POST /api/v1/auth/register", () => {
 describe("POST /api/v1/auth/login", () => {
   const credentials = {
     email: "test@example.com",
-    password: "password123",
+    password: "Test1234!",
   };
 
   beforeEach(async () => {
@@ -112,7 +112,7 @@ describe("POST /api/v1/auth/login", () => {
   it("returns 401 with non-existent email", async () => {
     const res = await request(app)
       .post("/api/v1/auth/login")
-      .send({ email: "nonexistent@example.com", password: "password123" });
+      .send({ email: "nonexistent@example.com", password: "Test1234!" });
 
     expect(res.status).toBe(401);
     expect(res.body.status).toBe("error");
@@ -128,7 +128,7 @@ describe("POST /api/v1/auth/refresh-token", () => {
   it("refreshes access token with valid refresh token", async () => {
     const registerRes = await request(app)
       .post("/api/v1/auth/register")
-      .send({ email: "test@example.com", password: "password123" });
+      .send({ email: "test@example.com", password: "Test1234!" });
 
     const cookies = registerRes.headers["set-cookie"];
     const refreshTokenCookie = Array.isArray(cookies)
@@ -159,7 +159,7 @@ describe("POST /api/v1/auth/logout", () => {
   it("logs out successfully", async () => {
     const registerRes = await request(app)
       .post("/api/v1/auth/register")
-      .send({ email: "test@example.com", password: "password123" });
+      .send({ email: "test@example.com", password: "Test1234!" });
 
     const accessToken = registerRes.body.accessToken;
 

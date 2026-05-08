@@ -1,48 +1,32 @@
 import { z } from "zod";
 import { registry } from "@/lib/openapi-registry";
+import {
+  emailSchema,
+  passwordSchema,
+  roleSchema,
+  UserResponseSchema,
+  ErrorResponseSchema,
+  ValidationErrorSchema,
+} from "./common.schema";
 
-// --- Base schemas ---
+// --- Request schemas ---
 
 export const RegisterBodySchema = z.object({
-  email: z.email().max(50),
-
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-
-    // at least one uppercase letter
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-
-    // at least one lowercase letter
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-
-    // at least one number
-    .regex(/[0-9]/, "Password must contain at least one number")
-
-    // at least one special character
-    .regex(
-      /[^A-Za-z0-9]/,
-      "Password must contain at least one special character"
-    ),
-
-  role: z.enum(["user", "admin"]).optional().default("user"),
+  email: emailSchema,
+  password: passwordSchema,
+  role: roleSchema.optional().default("user"),
 });
 
 export const LoginBodySchema = z.object({
-  email: z.email().max(50),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  email: emailSchema,
+  password: z.string().min(1, "Password is required"),
 });
 
 export const RefreshTokenCookiesSchema = z.object({
   refreshToken: z.string(),
 });
 
-export const UserResponseSchema = z.object({
-  id: z.string(),
-  username: z.string(),
-  email: z.email().max(50),
-  role: z.enum(["user", "admin"]),
-});
+// --- Response schemas ---
 
 export const AuthResponseSchema = z.object({
   user: UserResponseSchema,
@@ -51,22 +35,6 @@ export const AuthResponseSchema = z.object({
 
 export const AccessTokenResponseSchema = z.object({
   accessToken: z.string(),
-});
-
-export const ErrorResponseSchema = z.object({
-  status: z.string(),
-  message: z.string(),
-});
-
-export const ValidationErrorSchema = z.object({
-  status: z.string(),
-  message: z.string(),
-  errors: z.array(
-    z.object({
-      path: z.string(),
-      message: z.string(),
-    })
-  ),
 });
 
 // --- OpenAPI path registration ---
