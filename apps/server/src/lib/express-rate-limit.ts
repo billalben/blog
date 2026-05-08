@@ -1,5 +1,4 @@
 import { rateLimit } from "express-rate-limit";
-import { error } from "node:console";
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minutes
