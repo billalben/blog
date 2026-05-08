@@ -43,13 +43,13 @@ app.use(docsRouter);
 app.use("/api/v1", v1Routes);
 
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to the Blog API!" });
+  res.json({ success: true, message: "Welcome to the Blog API!", data: null });
 });
 
 app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   logger.error("Unhandled error:", err);
   res.status(500).json({
-    status: "error",
+    success: false,
     message: err instanceof Error ? err.message : "Internal server error",
   });
 });

@@ -1,6 +1,7 @@
 import logger from "@/lib/winston";
 import type { Request, Response, NextFunction } from "express";
 import User from "@/models/user";
+import { errorResponse } from "@/lib/response";
 
 export type TAuthRole = "user" | "admin";
 
@@ -11,36 +12,23 @@ const authorize = (roles: TAuthRole[]) => {
       const user = await User.findById(userId).select("role").exec();
 
       if (!user) {
-        res.status(401).json({
-          status: "error",
-          message: "Unauthorized: User not found",
-        });
-
         logger.warn(`Authorization failed: User with ID ${userId} not found`);
-        return;
+        return errorResponse(res, "Unauthorized: User not found", 401);
       }
 
       if (!roles.includes(user.role)) {
-        res.status(403).json({
-          status: "error",
-          message: "Forbidden: Insufficient permissions",
-        });
-
         logger.warn(
           `Authorization failed: User with ID ${userId} has role ${user.role}, required roles: ${roles.join(
             ", "
           )}`
         );
-        return;
+        return errorResponse(res, "Forbidden: Insufficient permissions", 403);
       }
 
       return next();
     } catch (error) {
-      res.status(500).json({
-        status: "error",
-        message: "Internal Server Error",
-      });
       logger.error("Authorization error:", error);
+      return errorResponse(res, "Internal Server Error");
     }
   };
 };

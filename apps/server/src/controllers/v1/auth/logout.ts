@@ -1,11 +1,10 @@
-import { generateAccessToken, generateRefreshToken } from "@/lib/jwt";
 import logger from "@/lib/winston";
 import config from "@/config";
 
-import User from "@/models/user";
 import Token from "@/models/token";
 
 import type { Request, Response } from "express";
+import { errorResponse } from "@/lib/response";
 
 const logout = async (req: Request, res: Response) => {
   try {
@@ -26,18 +25,14 @@ const logout = async (req: Request, res: Response) => {
       sameSite: "strict",
     });
 
-    res.sendStatus(204);
-
     logger.info("user logged out successfully", {
       userId: req.userId,
     });
+
+    res.sendStatus(204);
   } catch (error) {
     logger.error("Error logging out user:", error);
-
-    res.status(500).json({
-      status: "error",
-      message: "Internal server error",
-    });
+    return errorResponse(res, "Internal server error");
   }
 };
 

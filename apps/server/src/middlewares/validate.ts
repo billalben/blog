@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { ZodError, type ZodType } from "zod";
+import { validationErrorResponse } from "@/lib/response";
 
 export function validate(schemas: {
   body?: ZodType;
@@ -16,15 +17,13 @@ export function validate(schemas: {
       next();
     } catch (error) {
       if (error instanceof ZodError) {
-        res.status(400).json({
-          status: "error",
-          message: "Validation failed",
-          errors: error.issues.map((e) => ({
+        return validationErrorResponse(
+          res,
+          error.issues.map((e) => ({
             path: e.path.join("."),
             message: e.message,
-          })),
-        });
-        return;
+          }))
+        );
       }
       next(error);
     }

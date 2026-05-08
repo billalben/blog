@@ -7,61 +7,48 @@ import Token from "@/models/token";
 import type { Request, Response } from "express";
 import { Types } from "mongoose";
 import { generateAccessToken, verifyRefreshToken } from "@/lib/jwt";
+import { successResponse, errorResponse } from "@/lib/response";
 
 const refreshToken = async (req: Request, res: Response) => {
-  const refreshToken: string = req.cookies.refreshToken;
+  const refreshTokenCookie: string = req.cookies.refreshToken;
 
   try {
-    const tokenExists = await Token.exists({ token: refreshToken });
+    const tokenExists = await Token.exists({ token: refreshTokenCookie });
 
     if (!tokenExists) {
-      res.status(401).json({
-        status: "error",
-        message: "Invalid or expired refresh token",
+      logger.warn("Refresh token not found in database", {
+        refreshToken: refreshTokenCookie,
       });
-
-      logger.warn("Refresh token not found in database", { refreshToken });
-
-      return;
+      return errorResponse(res, "Invalid or expired refresh token", 401);
     }
 
-    // verify the refresh token
-    const jwtPayload = verifyRefreshToken(refreshToken) as {
+    const jwtPayload = verifyRefreshToken(refreshTokenCookie) as {
       userId: Types.ObjectId;
     };
 
     const accessToken = generateAccessToken(jwtPayload.userId);
 
-    res.status(200).json({
-      accessToken,
-    });
-
     logger.info("Access token refreshed successfully", {
       userId: jwtPayload.userId,
     });
+
+    return successResponse(res, { accessToken }, "Access token refreshed");
   } catch (error) {
     if (
       error instanceof JsonWebTokenError ||
       error instanceof TokenExpiredError
     ) {
-      res.status(401).json({
-        status: "error",
-        message: "Invalid or expired refresh token",
+      logger.warn("Invalid or expired refresh token", {
+        refreshToken: refreshTokenCookie,
       });
-
-      logger.warn("Invalid or expired refresh token", { refreshToken });
-      return;
+      return errorResponse(res, "Invalid or expired refresh token", 401);
     }
-
-    res.status(401).json({
-      status: "error",
-      message: "Invalid or expired refresh token",
-    });
 
     logger.error(
       "Error refreshing token:",
       error instanceof Error ? error.message : error
     );
+    return errorResponse(res, "Invalid or expired refresh token", 401);
   }
 };
 

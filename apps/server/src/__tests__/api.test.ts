@@ -9,7 +9,8 @@ describe("GET /", () => {
   it("returns welcome message", async () => {
     const res = await request(app).get("/");
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ message: "Welcome to the Blog API!" });
+    expect(res.body.success).toBe(true);
+    expect(res.body.message).toBe("Welcome to the Blog API!");
   });
 });
 
@@ -17,8 +18,9 @@ describe("GET /api/v1/", () => {
   it("returns API status", async () => {
     const res = await request(app).get("/api/v1/");
     expect(res.status).toBe(200);
-    expect(res.body.status).toBe("success");
-    expect(res.body.version).toBe("1.0.0");
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.version).toBe("1.0.0");
+    expect(res.body.data.docs).toBe("/docs");
   });
 });
 
@@ -39,10 +41,11 @@ describe("POST /api/v1/auth/register", () => {
       .send(validUser);
 
     expect(res.status).toBe(201);
-    expect(res.body.user.email).toBe("test@example.com");
-    expect(res.body.user.role).toBe("user");
-    expect(res.body.accessToken).toBeDefined();
-    expect(res.body.user.password).toBeUndefined();
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.user.email).toBe("test@example.com");
+    expect(res.body.data.user.role).toBe("user");
+    expect(res.body.data.accessToken).toBeDefined();
+    expect(res.body.data.user.password).toBeUndefined();
   });
 
   it("returns 400 when email is missing", async () => {
@@ -51,7 +54,7 @@ describe("POST /api/v1/auth/register", () => {
       .send({ password: "Test1234!" });
 
     expect(res.status).toBe(400);
-    expect(res.body.status).toBe("error");
+    expect(res.body.success).toBe(false);
   });
 
   it("returns 400 when password is too short", async () => {
@@ -60,7 +63,7 @@ describe("POST /api/v1/auth/register", () => {
       .send({ email: "test@example.com", password: "12345" });
 
     expect(res.status).toBe(400);
-    expect(res.body.status).toBe("error");
+    expect(res.body.success).toBe(false);
   });
 
   it("returns 409 when email already exists", async () => {
@@ -71,7 +74,7 @@ describe("POST /api/v1/auth/register", () => {
       .send(validUser);
 
     expect(res.status).toBe(409);
-    expect(res.body.status).toBe("error");
+    expect(res.body.success).toBe(false);
   });
 });
 
@@ -94,8 +97,9 @@ describe("POST /api/v1/auth/login", () => {
       .send(credentials);
 
     expect(res.status).toBe(201);
-    expect(res.body.user.email).toBe("test@example.com");
-    expect(res.body.accessToken).toBeDefined();
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.user.email).toBe("test@example.com");
+    expect(res.body.data.accessToken).toBeDefined();
   });
 
   it("returns 401 with wrong password", async () => {
@@ -106,7 +110,7 @@ describe("POST /api/v1/auth/login", () => {
       .send({ email: "test@example.com", password: "wrongpassword" });
 
     expect(res.status).toBe(401);
-    expect(res.body.status).toBe("error");
+    expect(res.body.success).toBe(false);
   });
 
   it("returns 401 with non-existent email", async () => {
@@ -115,7 +119,7 @@ describe("POST /api/v1/auth/login", () => {
       .send({ email: "nonexistent@example.com", password: "Test1234!" });
 
     expect(res.status).toBe(401);
-    expect(res.body.status).toBe("error");
+    expect(res.body.success).toBe(false);
   });
 });
 
@@ -140,13 +144,14 @@ describe("POST /api/v1/auth/refresh-token", () => {
       .set("Cookie", refreshTokenCookie || "");
 
     expect(res.status).toBe(200);
-    expect(res.body.accessToken).toBeDefined();
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.accessToken).toBeDefined();
   });
 
   it("returns 400 when no refresh token cookie is sent", async () => {
     const res = await request(app).post("/api/v1/auth/refresh-token");
     expect(res.status).toBe(400);
-    expect(res.body.status).toBe("error");
+    expect(res.body.success).toBe(false);
   });
 });
 
@@ -161,7 +166,7 @@ describe("POST /api/v1/auth/logout", () => {
       .post("/api/v1/auth/register")
       .send({ email: "test@example.com", password: "Test1234!" });
 
-    const accessToken = registerRes.body.accessToken;
+    const accessToken = registerRes.body.data.accessToken;
 
     const res = await request(app)
       .post("/api/v1/auth/logout")
@@ -173,6 +178,6 @@ describe("POST /api/v1/auth/logout", () => {
   it("returns 401 without auth token", async () => {
     const res = await request(app).post("/api/v1/auth/logout");
     expect(res.status).toBe(401);
-    expect(res.body.status).toBe("error");
+    expect(res.body.success).toBe(false);
   });
 });

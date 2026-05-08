@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 
 import logger from "@/lib/winston";
 import User from "@/models/user";
+import { successResponse, errorResponse } from "@/lib/response";
 
 const getCurrentUser = async (req: Request, res: Response) => {
   try {
@@ -10,25 +11,13 @@ const getCurrentUser = async (req: Request, res: Response) => {
     const user = await User.findById(userId).select("-__v").lean().exec();
 
     if (!user) {
-      res.status(404).json({
-        status: "error",
-        message: "User not found",
-      });
-      return;
+      return errorResponse(res, "User not found", 404);
     }
 
-    res.status(200).json({
-      status: "success",
-      message: "Current user fetched successfully",
-      data: { user },
-    });
+    return successResponse(res, { user }, "Current user fetched successfully");
   } catch (error) {
     logger.error("Error fetching current user:", error);
-
-    res.status(500).json({
-      status: "error",
-      message: "Internal Server Error",
-    });
+    return errorResponse(res, "Internal Server Error");
   }
 };
 

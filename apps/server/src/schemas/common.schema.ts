@@ -38,12 +38,12 @@ export const UserResponseSchema = z.object({
 });
 
 export const ErrorResponseSchema = z.object({
-  status: z.string(),
+  success: z.literal(false),
   message: z.string(),
 });
 
 export const ValidationErrorSchema = z.object({
-  status: z.string(),
+  success: z.literal(false),
   message: z.string(),
   errors: z.array(
     z.object({
@@ -51,4 +51,10 @@ export const ValidationErrorSchema = z.object({
       message: z.string(),
     })
   ),
+});
+
+export const PaginationMetaSchema = z.object({
+  count: z.number(),
+  next: z.string().nullable(),
+  previous: z.string().nullable(),
 });

@@ -5,33 +5,24 @@ import logger from "@/lib/winston";
 
 import type { Request, Response, NextFunction } from "express";
 import type { Types } from "mongoose";
+import { errorResponse } from "@/lib/response";
 
 const authenticate = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
 
-  // if there is no Bearer token in the header, respond with 401 Unauthorized
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     logger.warn(
       "Unauthorized access attempt: Missing or invalid Authorization header",
       { ip: req.ip }
     );
-
-    res.status(401).json({
-      status: "error",
-      message: "Unauthorized",
-    });
-
-    return;
+    return errorResponse(res, "Unauthorized", 401);
   }
 
-  // const token = authHeader.split(" ")[1];
   const [, token] = authHeader.split(" ");
 
   try {
-    // Verify the access token and extract the user ID
     const jwtPayload = verifyAccessToken(token) as { userId: Types.ObjectId };
 
-    // Attach the user ID to the request object for use in subsequent middleware or route handlers
     req.userId = jwtPayload.userId;
 
     logger.info("Access token verified successfully", {
@@ -39,41 +30,20 @@ const authenticate = (req: Request, res: Response, next: NextFunction) => {
       ip: req.ip,
     });
 
-    // Call the next middleware or route handler
     next();
   } catch (error) {
     if (error instanceof TokenExpiredError) {
-      logger.warn("Access token expired", {
-        ip: req.ip,
-      });
-
-      res.status(401).json({
-        status: "error",
-        message: "Access token expired",
-      });
-
-      return;
+      logger.warn("Access token expired", { ip: req.ip });
+      return errorResponse(res, "Access token expired", 401);
     }
 
     if (error instanceof JsonWebTokenError) {
-      logger.warn("Invalid access token", {
-        ip: req.ip,
-      });
-
-      res.status(401).json({
-        status: "error",
-        message: "Invalid access token",
-      });
-
-      return;
+      logger.warn("Invalid access token", { ip: req.ip });
+      return errorResponse(res, "Invalid access token", 401);
     }
 
     logger.error("Error verifying access token:", error);
-
-    res.status(500).json({
-      status: "error",
-      message: "Internal server error",
-    });
+    return errorResponse(res, "Internal server error");
   }
 };
 

@@ -8,6 +8,7 @@ import Token from "@/models/token";
 
 import type { Request, Response } from "express";
 import type { IUser } from "@/models/user";
+import { successResponse, errorResponse } from "@/lib/response";
 
 type TUserData = Pick<IUser, "email" | "password">;
 
@@ -21,34 +22,20 @@ const login = async (req: Request, res: Response) => {
       .exec();
 
     if (!user) {
-      res.status(401).json({
-        status: "error",
-        message: "Invalid email or password",
-      });
-
       logger.warn("Login attempt with non-existent email", { email });
-
-      return;
+      return errorResponse(res, "Invalid email or password", 401);
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      res.status(401).json({
-        status: "error",
-        message: "Invalid email or password",
-      });
-
       logger.warn("Login attempt with incorrect password", { email });
-
-      return;
+      return errorResponse(res, "Invalid email or password", 401);
     }
 
-    // Generate tokens
     const accessToken = generateAccessToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
 
-    // Store refresh token in the database
     await Token.create({ userId: user._id, token: refreshToken });
     logger.info("Refresh token stored in database", {
       userId: user._id,
@@ -61,27 +48,29 @@ const login = async (req: Request, res: Response) => {
       sameSite: "strict",
     });
 
-    res.status(201).json({
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-      },
-      accessToken,
-    });
-
     logger.info("User logged in successfully", {
       userId: user._id,
       email: user.email,
       role: user.role,
     });
+
+    return successResponse(
+      res,
+      {
+        user: {
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          role: user.role,
+        },
+        accessToken,
+      },
+      "User logged in successfully",
+      201
+    );
   } catch (error) {
     logger.error("Error logging in user:", error);
-    res.status(500).json({
-      status: "error",
-      message: "Internal server error",
-    });
+    return errorResponse(res, "Internal server error");
   }
 };
 

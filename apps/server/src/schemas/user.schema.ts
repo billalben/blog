@@ -24,7 +24,7 @@ export const UpdateCurrentUserBodySchema = z.object({
 // --- Response schemas ---
 
 export const UserProfileResponseSchema = z.object({
-  status: z.string(),
+  success: z.literal(true),
   message: z.string(),
   data: z.object({
     user: UserResponseSchema.extend({
