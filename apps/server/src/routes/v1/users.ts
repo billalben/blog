@@ -8,6 +8,7 @@ import { UpdateCurrentUserBodySchema } from "@/schemas/user.schema";
 import getCurrentUser from "@/controllers/v1/user/get_current_user";
 import updateCurrentUser from "@/controllers/v1/user/update_current_user";
 import deleteCurrentUser from "@/controllers/v1/user/delete_current_user";
+import getAllUsers from "@/controllers/v1/user/get_all_users";
 
 const router = Router();
 
@@ -32,5 +33,7 @@ router.delete(
   authorize(["admin", "user"]),
   deleteCurrentUser
 );
+
+router.get("/", authenticate, authorize(["admin"]), getAllUsers);
 
 export default router;
