@@ -1,4 +1,4 @@
-import logger from "@/lib/windston";
+import logger from "@/lib/winston";
 import config from "@/config";
 import type { Request, Response } from "express";
 

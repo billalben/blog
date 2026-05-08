@@ -1,6 +1,6 @@
 import mongoose, { type ConnectOptions } from "mongoose";
 import config from "@/config";
-import logger from "./windston";
+import logger from "./winston";
 
 const clientOptions: ConnectOptions = {
   dbName: "blog-db",

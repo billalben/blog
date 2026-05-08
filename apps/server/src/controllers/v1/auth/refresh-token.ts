@@ -1,6 +1,6 @@
 import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 
-import logger from "@/lib/windston";
+import logger from "@/lib/winston";
 
 import Token from "@/models/token";
 

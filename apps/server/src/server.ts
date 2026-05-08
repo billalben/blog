@@ -10,7 +10,7 @@ import v1Routes from "./routes/v1";
 import config from "@/config";
 import limiter from "@/lib/express-rate-limit";
 import { connectToDatabase, disconnectFromDatabase } from "@/lib/mongoose";
-import logger from "./lib/windston";
+import logger from "./lib/winston";
 
 // Create Express app
 const app = express();

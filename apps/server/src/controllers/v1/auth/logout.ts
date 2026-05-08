@@ -1,5 +1,5 @@
 import { generateAccessToken, generateRefreshToken } from "@/lib/jwt";
-import logger from "@/lib/windston";
+import logger from "@/lib/winston";
 import config from "@/config";
 
 import User from "@/models/user";
