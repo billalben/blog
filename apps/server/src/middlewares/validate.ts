@@ -10,9 +10,9 @@ export function validate(schemas: {
 }) {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (schemas.body) req.body = schemas.body.parse(req.body);
-      if (schemas.query) req.query = schemas.query.parse(req.query) as any;
-      if (schemas.params) req.params = schemas.params.parse(req.params) as any;
+      if (schemas.body) schemas.body.parse(req.body);
+      if (schemas.query) schemas.query.parse(req.query);
+      if (schemas.params) schemas.params.parse(req.params);
       if (schemas.cookies) schemas.cookies.parse(req.cookies);
       next();
     } catch (error) {

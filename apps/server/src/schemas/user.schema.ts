@@ -26,7 +26,7 @@ export const UpdateCurrentUserBodySchema = z.object({
 
 export const GetAllUsersQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
-  page_size: z.coerce.number().int().min(1).max(100).default(10),
+  page_size: z.coerce.number().int().min(1).max(50).default(10),
 });
 
 // --- Response schemas ---
@@ -129,7 +129,7 @@ registry.registerPath({
       description: "User not found",
       content: { "application/json": { schema: ErrorResponseSchema } },
     },
-     409: {
+    409: {
       description: "Email or username already exists",
       content: { "application/json": { schema: ErrorResponseSchema } },
     },

@@ -3,21 +3,27 @@ import type { Request, Response } from "express";
 import logger from "@/lib/winston";
 import User from "@/models/user";
 import { paginate, paginatedResponse, errorResponse } from "@/lib/response";
+import { GetAllUsersQuerySchema } from "@/schemas/user.schema";
 
 const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const { page, page_size } = req.query as unknown as {
-      page: number;
-      page_size: number;
-    };
-
-
-    const skip = (page - 1) * page_size;
+    const { page, page_size } = GetAllUsersQuerySchema.parse(req.query);
 
     const [users, count] = await Promise.all([
-      User.find().select("-__v").skip(skip).limit(page_size).lean().exec(),
+      User.find()
+        .select("-__v")
+        .skip((page - 1) * page_size)
+        .limit(page_size)
+        .lean()
+        .exec(),
       User.countDocuments(),
     ]);
+
+    const totalPages = Math.ceil(count / page_size);
+
+    if (page > totalPages) {
+      return errorResponse(res, "Page not found", 404);
+    }
 
     const meta = paginate(count, page, page_size, req);
 
