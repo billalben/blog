@@ -1,6 +1,7 @@
 import { generateAccessToken, generateRefreshToken } from "@/lib/jwt";
 import logger from "@/lib/winston";
 import config from "@/config";
+import bcrypt from "bcrypt";
 
 import User from "@/models/user";
 import Token from "@/models/token";
@@ -12,7 +13,7 @@ type TUserData = Pick<IUser, "email" | "password">;
 
 const login = async (req: Request, res: Response) => {
   try {
-    const { email }: TUserData = req.body;
+    const { email, password }: TUserData = req.body;
 
     const user = await User.findOne({ email })
       .select("username email password role")
@@ -26,6 +27,19 @@ const login = async (req: Request, res: Response) => {
       });
 
       logger.warn("Login attempt with non-existent email", { email });
+
+      return;
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      res.status(401).json({
+        status: "error",
+        message: "Invalid email or password",
+      });
+
+      logger.warn("Login attempt with incorrect password", { email });
 
       return;
     }

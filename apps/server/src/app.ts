@@ -10,14 +10,16 @@ import v1Routes from "./routes/v1";
 import config from "@/config";
 import limiter from "@/lib/express-rate-limit";
 import logger from "./lib/winston";
+import docsRouter from "./lib/openapi";
 
 const app = express();
 
 const corsOptions: CorsOptions = {
   origin(origin, callback) {
     if (
+      !origin ||
       config.NODE_ENV === "development" ||
-      config.WHITELISTED_ORIGINS.includes(origin || "")
+      config.WHITELISTED_ORIGINS.includes(origin)
     ) {
       callback(null, true);
     } else {
@@ -37,10 +39,19 @@ app.use(helmet());
 app.use(limiter);
 app.use(express.urlencoded({ extended: true }));
 
+app.use(docsRouter);
 app.use("/api/v1", v1Routes);
 
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to the Blog API!" });
+});
+
+app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  logger.error("Unhandled error:", err);
+  res.status(500).json({
+    status: "error",
+    message: err instanceof Error ? err.message : "Internal server error",
+  });
 });
 
 export default app;

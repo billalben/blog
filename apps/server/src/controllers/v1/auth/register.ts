@@ -61,6 +61,17 @@ const register = async (req: Request, res: Response) => {
       role: newUser.role,
     });
   } catch (error) {
+    if (
+      error instanceof Error &&
+      (error as Error & { cause?: { code?: number } }).cause?.code === 11000
+    ) {
+      res.status(409).json({
+        status: "error",
+        message: "A user with this email already exists",
+      });
+      return;
+    }
+
     logger.error("Error registering user:", error);
     res.status(500).json({
       status: "error",

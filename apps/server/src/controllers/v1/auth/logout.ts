@@ -11,7 +11,7 @@ const logout = async (req: Request, res: Response) => {
   try {
     const refreshToken = req.cookies.refreshToken;
 
-    if (!refreshToken) {
+    if (refreshToken) {
       await Token.deleteOne({ token: refreshToken });
 
       logger.info("User logged out successfully", {
