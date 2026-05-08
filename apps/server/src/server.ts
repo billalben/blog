@@ -41,13 +41,12 @@ app.use(cookieParser()); // Parse cookies
 app.use(
   compression({
     threshold: 1024, // Compress responses larger than 1KB
-  }),
+  })
 ); // Enable response compression
 app.use(helmet()); // Set security-related HTTP headers
 app.use(limiter); // Apply rate limiting to all requests
 
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded request bodies
-
 (async () => {
   // Initialize database connection here if needed
   try {

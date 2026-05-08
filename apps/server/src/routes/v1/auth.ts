@@ -46,7 +46,7 @@ router.post(
       .withMessage("Invalid role"),
   ],
   validationErrorMiddleware,
-  register,
+  register
 );
 
 router.post(
@@ -92,7 +92,7 @@ router.post(
       .withMessage("Invalid role"),
   ],
   validationErrorMiddleware,
-  login,
+  login
 );
 
 router.post(
@@ -103,7 +103,7 @@ router.post(
     .isJWT()
     .withMessage("Invalid refresh token format"),
   validationErrorMiddleware,
-  refreshToken,
+  refreshToken
 );
 
 router.post("/logout", authenticate, logout);

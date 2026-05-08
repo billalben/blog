@@ -13,7 +13,7 @@ const authenticate = (req: Request, res: Response, next: NextFunction) => {
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     logger.warn(
       "Unauthorized access attempt: Missing or invalid Authorization header",
-      { ip: req.ip },
+      { ip: req.ip }
     );
 
     res.status(401).json({

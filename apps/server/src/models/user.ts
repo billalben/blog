@@ -99,7 +99,7 @@ const userSchema = new Schema<IUser>(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 // before saving a user document, hash the password if it has been modified

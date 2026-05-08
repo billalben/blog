@@ -60,7 +60,7 @@ const refreshToken = async (req: Request, res: Response) => {
 
     logger.error(
       "Error refreshing token:",
-      error instanceof Error ? error.message : error,
+      error instanceof Error ? error.message : error
     );
   }
 };

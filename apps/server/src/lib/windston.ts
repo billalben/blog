@@ -16,9 +16,9 @@ if (config.NODE_ENV !== "production") {
         align(),
         printf(({ level, message, timestamp, stack }) => {
           return `${timestamp} [${level}]: ${stack || message}`;
-        }),
+        })
       ),
-    }),
+    })
   );
 }
 
