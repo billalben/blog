@@ -1,8 +1,6 @@
 import { Schema, model, HydratedDocument } from "mongoose";
 import bcrypt from "bcrypt";
 
-type UserDocument = HydratedDocument<IUser>;
-
 // Define the IUser interface to represent the structure of a user document in MongoDB
 export interface IUser {
   username: string;
@@ -97,20 +95,16 @@ const userSchema = new Schema<IUser>(
       },
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 // before saving a user document, hash the password if it has been modified
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
-    // next();
     return;
   }
 
   this.password = await bcrypt.hash(this.password, 10);
-  // next();
 });
 
 // Create the User model using the schema and export it

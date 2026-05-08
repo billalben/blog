@@ -3,7 +3,7 @@ import type { Request, Response } from "express";
 import logger from "@/lib/winston";
 import User from "@/models/user";
 
-const getCuerrentUser = async (req: Request, res: Response) => {
+const getCurrentUser = async (req: Request, res: Response) => {
   try {
     const userId = req.userId;
 
@@ -19,7 +19,7 @@ const getCuerrentUser = async (req: Request, res: Response) => {
 
     res.status(200).json({
       status: "success",
-      messsage: "Current user fetched successfully",
+      message: "Current user fetched successfully",
       data: { user },
     });
   } catch (error) {
@@ -32,4 +32,4 @@ const getCuerrentUser = async (req: Request, res: Response) => {
   }
 };
 
-export default getCuerrentUser;
+export default getCurrentUser;
