@@ -54,6 +54,10 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded request bo
 
     app.use("/api/v1", v1Routes);
 
+    app.get("/", (req, res) => {
+      res.json({ message: "Welcome to the Blog API!" });
+    });
+
     app.listen(config.PORT, () => {
       logger.info(`Server running on http://localhost:${config.PORT}`);
     });

@@ -1,3 +1,4 @@
+import "express";
 import type { Types } from "mongoose";
 
 declare global {
