@@ -13,7 +13,10 @@ const config = {
     process.env.JWT_REFRESH_SECRET || "default_refresh_secret",
   ACCESS_TOKEN_EXPIRY: "1h" as const,
   REFRESH_TOKEN_EXPIRY: "7d" as const,
-  WHITELIST_ADMINS_MAIL: ["billal@domain.com", "admin@domain.com"],
+  // WHITELIST_ADMINS_MAIL: ["billal@domain.com", "admin@domain.com"],
+  WHITELIST_ADMINS_MAIL: process.env.WHITELIST_ADMINS_MAIL
+    ? process.env.WHITELIST_ADMINS_MAIL.split(",")
+    : [],
 };
 
 export default config;
