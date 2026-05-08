@@ -4,15 +4,33 @@ import { registry } from "@/lib/openapi-registry";
 // --- Base schemas ---
 
 export const RegisterBodySchema = z.object({
-  email: z.string().email().max(50),
-  password: z.string().min(6),
+  email: z.email().max(50),
+
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+
+    // at least one uppercase letter
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+
+    // at least one lowercase letter
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+
+    // at least one number
+    .regex(/[0-9]/, "Password must contain at least one number")
+
+    // at least one special character
+    .regex(
+      /[^A-Za-z0-9]/,
+      "Password must contain at least one special character"
+    ),
+
   role: z.enum(["user", "admin"]).optional().default("user"),
 });
 
 export const LoginBodySchema = z.object({
-  email: z.string().email().max(50),
-  password: z.string().min(6),
-  role: z.enum(["user", "admin"]).optional(),
+  email: z.email().max(50),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 export const RefreshTokenCookiesSchema = z.object({
@@ -22,7 +40,7 @@ export const RefreshTokenCookiesSchema = z.object({
 export const UserResponseSchema = z.object({
   id: z.string(),
   username: z.string(),
-  email: z.string(),
+  email: z.email().max(50),
   role: z.enum(["user", "admin"]),
 });
 
