@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 
 import logger from "@/lib/winston";
 import User from "@/models/user";
+import { errorResponse } from "@/lib/response";
 
 const deleteCurrentUser = async (req: Request, res: Response) => {
   try {
@@ -10,21 +11,15 @@ const deleteCurrentUser = async (req: Request, res: Response) => {
     const user = await User.findByIdAndDelete(userId).exec();
 
     if (!user) {
-      return res.status(404).json({
-        status: "error",
-        message: "User not found",
-      });
+      return errorResponse(res, "User not found", 404);
     }
 
     logger.info(`User ${user.username} deleted their account`);
 
-    res.status(204).send();
+    res.sendStatus(204);
   } catch (error) {
-    res.status(500).json({
-      status: "error",
-      message: "Internal Server Error",
-    });
     logger.error("Error deleting user:", error);
+    return errorResponse(res, "Internal Server Error");
   }
 };
 

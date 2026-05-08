@@ -2,37 +2,32 @@ import type { Request, Response } from "express";
 
 import logger from "@/lib/winston";
 import User from "@/models/user";
+import { paginate, paginatedResponse, errorResponse } from "@/lib/response";
 
 const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const limit = parseInt(req.query.limit as string) || 10;
-    const offset = parseInt(req.query.offset as string) || 0;
-    const total = await User.countDocuments();
-    const users = await User.find()
-      .select("-__v")
-      .skip(offset)
-      .limit(limit)
-      .lean()
-      .exec();
+    const { page, page_size } = req.query as unknown as {
+      page: number;
+      page_size: number;
+    };
 
-    res.status(200).json({
-      status: "success",
-      message: "Users retrieved successfully",
-      data: {
-        users,
-        pagination: {
-          total,
-          limit,
-          offset,
-        },
-      },
-    });
+
+    const skip = (page - 1) * page_size;
+
+    const [users, count] = await Promise.all([
+      User.find().select("-__v").skip(skip).limit(page_size).lean().exec(),
+      User.countDocuments(),
+    ]);
+
+    const meta = paginate(count, page, page_size, req);
 
     logger.info("Retrieved all users successfully", {
       userId: req.userId,
       ip: req.ip,
-      totalUsers: total,
+      totalUsers: count,
     });
+
+    return paginatedResponse(res, users, meta, "Users retrieved successfully");
   } catch (error) {
     logger.error("Failed to retrieve users", {
       userId: req.userId,
@@ -40,10 +35,7 @@ const getAllUsers = async (req: Request, res: Response) => {
       error,
     });
 
-    res.status(500).json({
-      status: "error",
-      message: "Failed to retrieve users",
-    });
+    return errorResponse(res, "Failed to retrieve users");
   }
 };
 

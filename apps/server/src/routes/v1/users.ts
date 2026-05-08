@@ -3,7 +3,10 @@ import { Router } from "express";
 import authenticate from "@/middlewares/authenticate";
 import authorize from "@/middlewares/authorize";
 import { validate } from "@/middlewares/validate";
-import { UpdateCurrentUserBodySchema } from "@/schemas/user.schema";
+import {
+  UpdateCurrentUserBodySchema,
+  GetAllUsersQuerySchema,
+} from "@/schemas/user.schema";
 
 import getCurrentUser from "@/controllers/v1/user/get_current_user";
 import updateCurrentUser from "@/controllers/v1/user/update_current_user";
@@ -34,6 +37,12 @@ router.delete(
   deleteCurrentUser
 );
 
-router.get("/", authenticate, authorize(["admin"]), getAllUsers);
+router.get(
+  "/",
+  authenticate,
+  authorize(["admin"]),
+  validate({ query: GetAllUsersQuerySchema }),
+  getAllUsers
+);
 
 export default router;
