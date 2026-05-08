@@ -23,10 +23,9 @@ const corsOptions: CorsOptions = {
     ) {
       callback(null, true);
     } else {
+      logger.warn(`CORS error: ${origin} is not allowed by CORS`);
       callback(new Error(`Origin ${origin} is not allowed by CORS`), false);
     }
-
-    logger.warn(`CORS error: ${origin} is not allowed by CORS`);
   },
   methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
   allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
