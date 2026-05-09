@@ -11,6 +11,7 @@ Express REST API for the blog application.
 - **Validation:** Zod
 - **Docs:** OpenAPI (zod-to-openapi + Swagger UI)
 - **Testing:** Vitest + Supertest + mongodb-memory-server
+- **Dead code analysis:** Knip
 
 ## Project Structure
 
@@ -47,6 +48,8 @@ pnpm --filter server dev
 | `pnpm --filter server test:watch` | Run tests in watch mode |
 | `pnpm --filter server lint` | Lint with ESLint |
 | `pnpm --filter server format` | Format with Prettier |
+| `pnpm --filter server knip` | Run Knip dead code analysis |
+| `pnpm --filter server knip:report` | Export Knip results as markdown (`knip-report.md`) |
 
 ## API
 

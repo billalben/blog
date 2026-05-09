@@ -19,7 +19,7 @@ export const createUserInDb = async (overrides: Partial<{
   return user;
 };
 
-export const createTokensForUser = async (userId: mongoose.Types.ObjectId) => {
+const createTokensForUser = async (userId: mongoose.Types.ObjectId) => {
   const accessToken = generateAccessToken(userId);
   const refreshToken = generateRefreshToken(userId);
 
@@ -39,4 +39,3 @@ export const getRefreshTokenCookie = (refreshToken: string) => {
 };
 
 export const VALID_PASSWORD = "Test1234!";
-export const TEST_EMAIL = "test@example.com";
