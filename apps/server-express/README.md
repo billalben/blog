@@ -34,22 +34,22 @@ src/
 
 ```bash
 cp env-example .env   # then fill in MONGO_URI, JWT secrets, etc.
-pnpm --filter server dev
+pnpm --filter server-express dev
 ```
 
 ## Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `pnpm --filter server dev` | Start dev server with hot-reload |
-| `pnpm --filter server build` | Compile TypeScript |
-| `pnpm --filter server start` | Run compiled server |
-| `pnpm --filter server test` | Run tests |
-| `pnpm --filter server test:watch` | Run tests in watch mode |
-| `pnpm --filter server lint` | Lint with ESLint |
-| `pnpm --filter server format` | Format with Prettier |
-| `pnpm --filter server knip` | Run Knip dead code analysis |
-| `pnpm --filter server knip:report` | Export Knip results as markdown (`knip-report.md`) |
+| Command                                    | Description                                        |
+| ------------------------------------------ | -------------------------------------------------- |
+| `pnpm --filter server-express dev`         | Start dev server with hot-reload                   |
+| `pnpm --filter server-express build`       | Compile TypeScript                                 |
+| `pnpm --filter server-express start`       | Run compiled server                                |
+| `pnpm --filter server-express test`        | Run tests                                          |
+| `pnpm --filter server-express test:watch`  | Run tests in watch mode                            |
+| `pnpm --filter server-express lint`        | Lint with ESLint                                   |
+| `pnpm --filter server-express format`      | Format with Prettier                               |
+| `pnpm --filter server-express knip`        | Run Knip dead code analysis                        |
+| `pnpm --filter server-express knip:report` | Export Knip results as markdown (`knip-report.md`) |
 
 ## API
 
