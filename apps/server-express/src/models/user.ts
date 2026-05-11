@@ -1,4 +1,4 @@
-import { Schema, model, HydratedDocument } from "mongoose";
+import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 
 // Define the IUser interface to represent the structure of a user document in MongoDB
@@ -99,11 +99,10 @@ const userSchema = new Schema<IUser>(
 );
 
 // before saving a user document, hash the password if it has been modified
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function () {
   if (!this.isModified("password")) {
     return;
   }
-
   this.password = await bcrypt.hash(this.password, 10);
 });
 
