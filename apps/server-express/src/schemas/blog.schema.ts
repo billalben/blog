@@ -35,3 +35,7 @@ export const GetBlogsByUserIdParamsSchema = z
     userId: z.string().trim().nonempty("User ID is required"),
   })
   .refine((data) => Types.ObjectId.isValid(data.userId), "User ID is invalid");
+
+export const GetBlogBySlugParamsSchema = z.object({
+  slug: z.string().trim().nonempty("Slug is required"),
+});
