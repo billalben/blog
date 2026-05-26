@@ -1,6 +1,6 @@
 import { z } from "zod";
+import { PaginationQuerySchema } from "./common.schema";
 
-// CreateBlogBodySchema
 export const CreateBlogBodySchema = z.object({
   title: z
     .string()
@@ -26,3 +26,5 @@ export const CreateBlogBodySchema = z.object({
   //   )
   //   .nonoptional ("Banner image is required"),
 });
+
+export const GetAllBlogsQuerySchema = z.object(PaginationQuerySchema.shape);

@@ -9,6 +9,7 @@ import {
   ErrorResponseSchema,
   ValidationErrorSchema,
   PaginationMetaSchema,
+  PaginationQuerySchema,
 } from "./common.schema";
 
 // --- Request schemas ---
@@ -24,10 +25,7 @@ export const UpdateCurrentUserBodySchema = z.object({
 
 // --- Query schemas ---
 
-export const GetAllUsersQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  page_size: z.coerce.number().int().min(1).max(50).default(10),
-});
+export const GetAllUsersQuerySchema = z.object(PaginationQuerySchema.shape);
 
 // --- Response schemas ---
 
