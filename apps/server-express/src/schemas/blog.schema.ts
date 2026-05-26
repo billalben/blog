@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { PaginationQuerySchema } from "./common.schema";
+import { Types } from "mongoose";
 
 export const CreateBlogBodySchema = z.object({
   title: z
@@ -28,3 +29,9 @@ export const CreateBlogBodySchema = z.object({
 });
 
 export const GetAllBlogsQuerySchema = z.object(PaginationQuerySchema.shape);
+
+export const GetBlogsByUserIdParamsSchema = z
+  .object({
+    userId: z.string().trim().nonempty("User ID is required"),
+  })
+  .refine((data) => Types.ObjectId.isValid(data.userId), "User ID is invalid");

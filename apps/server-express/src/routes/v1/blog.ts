@@ -1,5 +1,6 @@
 import createBlog from "@/controllers/v1/blog/createBlog";
 import getAllBlogs from "@/controllers/v1/blog/getAllBlogs";
+import getAllBlogsbyUser from "@/controllers/v1/blog/getBlogsByUser";
 
 import authenticate from "@/middlewares/authenticate";
 import authorize from "@/middlewares/authorize";
@@ -9,6 +10,7 @@ import { validate } from "@/middlewares/validate";
 import {
   CreateBlogBodySchema,
   GetAllBlogsQuerySchema,
+  GetBlogsByUserIdParamsSchema,
 } from "@/schemas/blog.schema";
 import { Router } from "express";
 
@@ -34,6 +36,15 @@ router.get(
   authorize(["admin", "user"]),
   validate({ query: GetAllBlogsQuerySchema }),
   getAllBlogs
+);
+
+// get blogs by user id
+router.get(
+  "/user/:userId",
+  authenticate,
+  authorize(["admin", "user"]),
+  validate({ params: GetBlogsByUserIdParamsSchema }),
+  getAllBlogsbyUser
 );
 
 export default router;
