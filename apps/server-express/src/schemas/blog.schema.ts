@@ -39,3 +39,26 @@ export const GetBlogsByUserIdParamsSchema = z
 export const GetBlogBySlugParamsSchema = z.object({
   slug: z.string().trim().nonempty("Slug is required"),
 });
+
+export const UpdateBlogByIdParamsSchema = z
+  .object({
+    blogId: z.string().trim().nonempty("Blog ID is required"),
+  })
+  .refine((data) => Types.ObjectId.isValid(data.blogId), "Blog ID is invalid");
+
+export const UpdateBlogBodySchema = z.object({
+  title: z
+    .string()
+    .trim()
+    .nonempty("Title is required")
+    .min(5, "Title must be at least 5 characters long")
+    .max(180, "Title must be at most 180 characters long")
+    .optional(),
+  content: z
+    .string()
+    .trim()
+    .nonempty("Content is required")
+    .min(20, "Content must be at least 20 characters long")
+    .optional(),
+  status: z.enum(["draft", "published"]).optional(),
+});

@@ -2,6 +2,7 @@ import createBlog from "@/controllers/v1/blog/createBlog";
 import getAllBlogs from "@/controllers/v1/blog/getAllBlogs";
 import getAllBlogsbyUser from "@/controllers/v1/blog/getBlogsByUser";
 import getBlogBySlug from "@/controllers/v1/blog/getBlogBySlug";
+import updateBlog from "@/controllers/v1/blog/updateBlog";
 
 import authenticate from "@/middlewares/authenticate";
 import authorize from "@/middlewares/authorize";
@@ -13,6 +14,8 @@ import {
   GetAllBlogsQuerySchema,
   GetBlogBySlugParamsSchema,
   GetBlogsByUserIdParamsSchema,
+  UpdateBlogBodySchema,
+  UpdateBlogByIdParamsSchema,
 } from "@/schemas/blog.schema";
 import { Router } from "express";
 
@@ -48,13 +51,22 @@ router.get(
   getAllBlogsbyUser
 );
 
-// get blog by slug
 router.get(
   "/:slug",
   authenticate,
   authorize(["admin", "user"]),
   validate({ params: GetBlogBySlugParamsSchema }),
   getBlogBySlug
+);
+
+// update blog
+router.put(
+  "/:blogId",
+  authenticate,
+  authorize(["admin"]),
+  validate({ params: UpdateBlogByIdParamsSchema }),
+  validate({ body: UpdateBlogBodySchema }),
+  updateBlog
 );
 
 export default router;
