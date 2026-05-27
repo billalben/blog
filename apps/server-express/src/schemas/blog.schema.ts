@@ -62,3 +62,9 @@ export const UpdateBlogBodySchema = z.object({
     .optional(),
   status: z.enum(["draft", "published"]).optional(),
 });
+
+export const DeleteBlogByIdParamsSchema = z
+  .object({
+    blogId: z.string().trim().nonempty("Blog ID is required"),
+  })
+  .refine((data) => Types.ObjectId.isValid(data.blogId), "Blog ID is invalid");

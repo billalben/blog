@@ -16,10 +16,12 @@ import {
   GetBlogsByUserIdParamsSchema,
   UpdateBlogBodySchema,
   UpdateBlogByIdParamsSchema,
+  DeleteBlogByIdParamsSchema,
 } from "@/schemas/blog.schema";
 import { Router } from "express";
 
 import multer from "multer";
+import deleteBlog from "@/controllers/v1/blog/deleteBlog";
 
 const router = Router();
 
@@ -59,7 +61,6 @@ router.get(
   getBlogBySlug
 );
 
-// update blog
 router.put(
   "/:blogId",
   authenticate,
@@ -67,6 +68,14 @@ router.put(
   validate({ params: UpdateBlogByIdParamsSchema }),
   validate({ body: UpdateBlogBodySchema }),
   updateBlog
+);
+
+router.delete(
+  "/:blogId",
+  authenticate,
+  authorize(["admin"]),
+  validate({ params: DeleteBlogByIdParamsSchema }),
+  deleteBlog
 );
 
 export default router;

@@ -1,25 +1,57 @@
 import type { Request, Response } from "express";
 
 import logger from "@/lib/winston";
+
 import User from "@/models/user";
-import { errorResponse } from "@/lib/response";
+import Blog from "@/models/blog";
+
+import { errorResponse, successResponse } from "@/lib/response";
+
+import { v2 as cloudinary } from "cloudinary";
+import { Types } from "mongoose";
 
 const deleteCurrentUser = async (req: Request, res: Response) => {
   try {
     const userId = req.userId;
 
-    const user = await User.findByIdAndDelete(userId).exec();
+    const blogs = await Blog.find({
+      author: new Types.ObjectId(userId?.toString() ?? ""),
+    })
+      .select("banner.publicId")
+      .lean()
+      .exec();
 
-    if (!user) {
-      return errorResponse(res, "User not found", 404);
+    const publicIds = blogs.map((blog) => blog.banner.publicId);
+
+    if (publicIds.length > 0) {
+      logger.info("Deleting blog banners", {
+        userId: req.userId,
+        ip: req.ip,
+        publicIds: publicIds,
+      });
+
+      await cloudinary.api.delete_resources(publicIds);
     }
 
-    logger.info(`User ${user.username} deleted their account`);
+    await Blog.deleteMany({
+      author: new Types.ObjectId(userId?.toString() ?? ""),
+    });
+    logger.info("Deleted blogs", {
+      userId: req.userId,
+      ip: req.ip,
+      numberOfBlogs: blogs.length,
+    });
 
-    res.sendStatus(204);
+    await User.findByIdAndDelete(userId);
+    logger.info("Deleted user", {
+      userId: req.userId,
+      ip: req.ip,
+    });
+
+    return successResponse(res, null, "User deleted successfully", 204);
   } catch (error) {
     logger.error("Error deleting user:", error);
-    return errorResponse(res, "Internal Server Error");
+    return errorResponse(res, "Internal Server Error", 500);
   }
 };
 
