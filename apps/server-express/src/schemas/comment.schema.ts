@@ -8,3 +8,7 @@ export const CreateCommentBodySchema = z.object({
 export const CreateCommentParamsSchema = z.object({
   blogId: z.string().nonempty("Blog ID is required"),
 });
+
+export const GetCommentsByBlogIdParamsSchema = z.object({
+  blogId: z.string().nonempty("Blog ID is required"),
+});
