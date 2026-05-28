@@ -16,7 +16,7 @@ export interface IBlog {
   author: Types.ObjectId;
   viewsCount: number;
   likesCount: number;
-  commentsCounts: number;
+  commentsCount: number;
   status: "draft" | "published";
 }
 
@@ -68,7 +68,7 @@ const blogSchema = new Schema<IBlog>(
       type: Number,
       default: 0,
     },
-    commentsCounts: {
+    commentsCount: {
       type: Number,
       default: 0,
     },
