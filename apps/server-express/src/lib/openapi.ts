@@ -1,9 +1,13 @@
-import { OpenApiGeneratorV3 } from "@asteasolutions/zod-to-openapi";
 import swaggerUi from "swagger-ui-express";
 import { Router } from "express";
 import { registry } from "./openapi-registry";
+import { OpenApiGeneratorV3 } from "@asteasolutions/zod-to-openapi";
 
 import "@/schemas/auth.schema";
+import "@/schemas/user.schema";
+import "@/schemas/blog.schema";
+import "@/schemas/like.schema";
+import "@/schemas/comment.schema";
 
 registry.registerComponent("securitySchemes", "BearerAuth", {
   type: "http",
