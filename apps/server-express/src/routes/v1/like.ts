@@ -10,6 +10,7 @@ import {
 } from "@/schemas/like.schema";
 
 import likeBlog from "@/controllers/v1/like/likeBlog";
+import unlikeBlog from "@/controllers/v1/like/unlikeBlog";
 
 const router = Router();
 
@@ -19,6 +20,14 @@ router.post(
   authorize(["admin", "user"]),
   validate({ body: LikeBlogBodySchema, params: LikeBlogParamsSchema }),
   likeBlog
+);
+
+router.delete(
+  "/blog/:blogId",
+  authenticate,
+  authorize(["admin", "user"]),
+  validate({ body: LikeBlogBodySchema, params: LikeBlogParamsSchema }),
+  unlikeBlog
 );
 
 export default router;
