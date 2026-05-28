@@ -4,7 +4,7 @@
 * ```yaml
   type: builtin:openapi
   props:
-    models: true
+    models: false
     downloadLink: false
   dependencies:
     spec:
