@@ -40,11 +40,13 @@ export const BlogsListPage = () => {
               hoverable
               onClick={() => navigate(`/blogs/${blog.slug}`)}
               cover={
-                <img
-                  alt={blog.title}
-                  src={blog.banner.url}
-                  style={{ height: 180, objectFit: "cover" }}
-                />
+                blog.banner ? (
+                  <img
+                    alt={blog.title}
+                    src={blog.banner.url}
+                    style={{ height: 180, objectFit: "cover" }}
+                  />
+                ) : undefined
               }
             >
               <Meta

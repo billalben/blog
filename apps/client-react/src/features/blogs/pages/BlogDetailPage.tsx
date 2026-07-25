@@ -45,18 +45,20 @@ export const BlogDetailPage = () => {
 
   return (
     <div style={{ maxWidth: 800, margin: "0 auto" }}>
-      <Image
-        src={blog.banner.url}
-        alt={blog.title}
-        style={{
-          width: "100%",
-          maxHeight: 400,
-          objectFit: "cover",
+      {blog.banner && (
+        <Image
+          src={blog.banner.url}
+          alt={blog.title}
+          style={{
+            width: "100%",
+            maxHeight: 400,
+            objectFit: "cover",
           borderRadius: 8,
           marginBottom: 24,
         }}
-        preview={false}
-      />
+          preview={false}
+        />
+      )}
 
       <Space style={{ marginBottom: 8 }}>
         <Tag color={blog.status === "published" ? "green" : "orange"}>

@@ -7,7 +7,7 @@ export interface IBlog {
   title: string;
   slug: string;
   content: string;
-  banner: {
+  banner?: {
     url: string;
     publicId: string;
     width: number;
@@ -40,19 +40,15 @@ const blogSchema = new Schema<IBlog>(
     banner: {
       url: {
         type: String,
-        required: [true, "Banner URL is required"],
       },
       publicId: {
         type: String,
-        required: [true, "Banner public ID is required"],
       },
       width: {
         type: Number,
-        required: [true, "Banner width is required"],
       },
       height: {
         type: Number,
-        required: [true, "Banner height is required"],
       },
     },
     author: {

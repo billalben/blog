@@ -21,7 +21,9 @@ const deleteCurrentUser = async (req: Request, res: Response) => {
       .lean()
       .exec();
 
-    const publicIds = blogs.map((blog) => blog.banner.publicId);
+    const publicIds = blogs
+      .map((blog) => blog.banner?.publicId)
+      .filter((id): id is string => !!id);
 
     if (publicIds.length > 0) {
       logger.info("Deleting blog banners", {

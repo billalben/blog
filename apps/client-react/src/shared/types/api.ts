@@ -40,7 +40,7 @@ export type Blog = {
   title: string;
   slug: string;
   content: string;
-  banner: Banner;
+  banner?: Banner;
   author: UserPublic;
   viewsCount: number;
   likesCount: number;

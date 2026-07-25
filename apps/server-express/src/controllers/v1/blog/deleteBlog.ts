@@ -48,7 +48,9 @@ const deleteBlog = async (req: Request, res: Response) => {
       );
     }
 
-    await cloudinary.uploader.destroy(blog.banner.publicId);
+    if (blog.banner?.publicId) {
+      await cloudinary.uploader.destroy(blog.banner.publicId);
+    }
 
     await Blog.findByIdAndDelete(blogId);
 
