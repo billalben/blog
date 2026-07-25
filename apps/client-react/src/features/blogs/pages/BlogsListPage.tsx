@@ -5,6 +5,7 @@ import {
   HeartOutlined,
   CommentOutlined,
   UserOutlined,
+  FileImageOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -41,14 +42,28 @@ export const BlogsListPage = () => {
               hoverable
               onClick={() => navigate(`/blogs/${blog.slug}`)}
               cover={
-                blog.banner ? (
-                  <img
-                    alt={blog.title}
-                    src={blog.banner.url}
-                    style={{ height: 180, objectFit: "cover" }}
-                  />
-                ) : undefined
-              }
+                  blog.banner ? (
+                    <img
+                      alt={blog.title}
+                      src={blog.banner.url}
+                      style={{ height: 180, objectFit: "cover" }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        height: 180,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                      }}
+                    >
+                      <FileImageOutlined
+                        style={{ fontSize: 48, color: "rgba(255,255,255,0.5)" }}
+                      />
+                    </div>
+                  )
+                }
             >
               <Meta
                 title={blog.title}
