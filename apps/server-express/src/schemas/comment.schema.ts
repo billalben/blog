@@ -25,11 +25,19 @@ export const DeleteCommentParamsSchema = z.object({
 
 // --- Response schemas ---
 
+export const CommentAuthorSchema = z.object({
+  id: z.string(),
+  username: z.string(),
+  email: z.string(),
+  role: z.string(),
+});
+
 export const CommentSchema = z.object({
   _id: z.string(),
   blogId: z.string(),
-  userId: z.string(),
   content: z.string(),
+  author: CommentAuthorSchema,
+  createdAt: z.string(),
 });
 
 export const CommentCountResponseSchema = z.object({

@@ -30,6 +30,7 @@ const getCommentsByBlog = async (req: Request, res: Response) => {
 
     const allComments = await Comment.find({ blogId: blogObjectId })
       .sort({ createdAt: -1 })
+      .populate("userId", "username email role")
       .lean()
       .exec();
 
@@ -37,9 +38,21 @@ const getCommentsByBlog = async (req: Request, res: Response) => {
       return errorResponse(res, "No comments found", 404);
     }
 
+    const comments = allComments.map((comment) => {
+      const rawComment = comment as unknown as Record<string, unknown>;
+      const rawUser = rawComment.userId as
+        | { _id: { toString(): string }; username: string; email: string; role: string }
+        | undefined;
+      const author = rawUser
+        ? { id: rawUser._id.toString(), username: rawUser.username, email: rawUser.email, role: rawUser.role }
+        : undefined;
+      const { userId, ...rest } = rawComment;
+      return { ...rest, author };
+    });
+
     return successResponse(
       res,
-      { comments: allComments },
+      { comments },
       "Comments retrieved successfully"
     );
   } catch (error) {

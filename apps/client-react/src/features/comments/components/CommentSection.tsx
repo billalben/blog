@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { Form, Input, Button, List, Typography, Popconfirm } from "antd";
-import { DeleteOutlined, UserOutlined } from "@ant-design/icons";
+import { Form, Input, Button, Typography, Popconfirm, Space, Flex, Divider } from "antd";
+import { DeleteOutlined, ClockCircleOutlined, MailOutlined } from "@ant-design/icons";
 import { commentsByBlogQueryOptions } from "@/features/comments/queries/comments.queryOptions";
 import {
   useCreateCommentMutation,
@@ -12,7 +12,7 @@ import { useAuth } from "@/app/providers/use-auth";
 import { Spinner } from "@/shared/components/Spinner";
 import { EmptyState } from "@/shared/components/EmptyState";
 
-const { Text } = Typography;
+const { Text, Title } = Typography;
 const { TextArea } = Input;
 
 type Props = {
@@ -49,7 +49,7 @@ export const CommentSection = ({ blogId }: Props) => {
 
   return (
     <div>
-      <Typography.Title level={4}>Comments</Typography.Title>
+      <Title level={4}>Comments</Title>
 
       {user && (
         <Form
@@ -83,16 +83,30 @@ export const CommentSection = ({ blogId }: Props) => {
       ) : comments.length === 0 ? (
         <EmptyState description="No comments yet" />
       ) : (
-        <List
-          itemLayout="horizontal"
-          dataSource={comments}
-          renderItem={(comment) => (
-            <List.Item
-              actions={
-                user && (user.id === comment.userId || user.role === "admin")
-                  ? [
+        <div>
+          {comments.map((comment, index) => (
+            <div key={comment._id}>
+              {index > 0 && <Divider style={{ margin: "12px 0" }} />}
+              <Flex vertical gap={8}>
+                <Flex justify="space-between" align="center">
+                  <Space size="small" wrap>
+                    <Text strong>{comment.author.username}</Text>
+                    <Text type="secondary">
+                      <MailOutlined style={{ marginRight: 4 }} />
+                      {comment.author.email}
+                    </Text>
+                    <Text type="secondary">
+                      <ClockCircleOutlined style={{ marginRight: 4 }} />
+                      {new Date(comment.createdAt).toLocaleDateString()}{" "}
+                      {new Date(comment.createdAt).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </Text>
+                  </Space>
+                  {user &&
+                    (user.id === comment.author.id || user.role === "admin") && (
                       <Popconfirm
-                        key="delete"
                         title="Delete comment?"
                         onConfirm={() => deleteMutation.mutate(comment._id)}
                         okText="Delete"
@@ -106,19 +120,14 @@ export const CommentSection = ({ blogId }: Props) => {
                           size="small"
                           loading={deleteMutation.isPending}
                         />
-                      </Popconfirm>,
-                    ]
-                  : []
-              }
-            >
-              <List.Item.Meta
-                avatar={<UserOutlined style={{ fontSize: 24 }} />}
-                title={<Text strong>{comment.userId.slice(0, 8)}...</Text>}
-                description={<Text>{comment.content}</Text>}
-              />
-            </List.Item>
-          )}
-        />
+                      </Popconfirm>
+                    )}
+                </Flex>
+                <Text>{comment.content}</Text>
+              </Flex>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

@@ -53,8 +53,9 @@ export type Blog = {
 export type Comment = {
   _id: string;
   blogId: string;
-  userId: string;
   content: string;
+  author: UserPublic;
+  createdAt: string;
 };
 
 type PaginatedMeta = {
