@@ -1,5 +1,13 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
-import { Layout as AntLayout, Button, Dropdown, Space, Typography } from "antd";
+import {
+  Layout as AntLayout,
+  Button,
+  Dropdown,
+  Flex,
+  Space,
+  Typography,
+  theme,
+} from "antd";
 import {
   UserOutlined,
   LogoutOutlined,
@@ -9,12 +17,15 @@ import {
 } from "@ant-design/icons";
 import { ThemeToggle } from "@/shared/components/ThemeToggle";
 import { useAuth } from "@/app/providers/use-auth";
+import { useTheme } from "@/app/providers/use-theme";
 
 const { Header, Content } = AntLayout;
 
 export const AppLayout = () => {
   const { user, isAuthenticated, logout } = useAuth();
+  const { isDark } = useTheme();
   const navigate = useNavigate();
+  const { token } = theme.useToken();
 
   const handleLogout = async () => {
     await logout();
@@ -55,20 +66,20 @@ export const AppLayout = () => {
           alignItems: "center",
           justifyContent: "space-between",
           paddingInline: 24,
+          background: isDark ? "#141414" : "#001529",
+          borderBottom: isDark ? `1px solid ${token.colorSplit}` : "none",
+          color: "#fff",
         }}
       >
         <Space size="large">
-          <Link
-            to="/blogs"
-            style={{ color: "inherit", textDecoration: "none" }}
-          >
-            <Typography.Title level={4} style={{ margin: 0, color: "inherit" }}>
+          <Link to="/blogs" style={{ textDecoration: "none" }}>
+            <Typography.Title level={4} style={{ margin: 0, color: "#fff" }}>
               Blog
             </Typography.Title>
           </Link>
         </Space>
 
-        <Space>
+        <Flex align="center" gap={8}>
           <ThemeToggle />
           {isAuthenticated ? (
             <>
@@ -82,14 +93,22 @@ export const AppLayout = () => {
                 </Button>
               )}
               <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
-                <Button type="text" icon={<UserOutlined />}>
+                <Button
+                  type="text"
+                  icon={<UserOutlined />}
+                  style={{ color: "#fff" }}
+                >
                   {user?.username}
                 </Button>
               </Dropdown>
             </>
           ) : (
-            <Space>
-              <Button type="text" onClick={() => navigate("/login")}>
+            <Space align="center">
+              <Button
+                type="text"
+                onClick={() => navigate("/login")}
+                style={{ color: "#fff" }}
+              >
                 Login
               </Button>
               <Button type="primary" onClick={() => navigate("/register")}>
@@ -97,7 +116,7 @@ export const AppLayout = () => {
               </Button>
             </Space>
           )}
-        </Space>
+        </Flex>
       </Header>
 
       <Content

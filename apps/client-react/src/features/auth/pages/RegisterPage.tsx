@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Form, Input, Button, Typography } from "antd";
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
 import { registerSchema } from "@/features/auth/schemas/auth.schema";
@@ -7,7 +7,6 @@ import { zodToFieldErrors } from "@/shared/lib/zod-helper";
 
 export const RegisterPage = () => {
   const mutation = useRegisterMutation();
-  const navigate = useNavigate();
   const [form] = Form.useForm();
 
   const onFinish = (values: unknown) => {
@@ -40,6 +39,7 @@ export const RegisterPage = () => {
         <Form.Item name="email">
           <Input prefix={<MailOutlined />} placeholder="Email" size="large" />
         </Form.Item>
+
         <Form.Item name="password">
           <Input.Password
             prefix={<LockOutlined />}
@@ -47,6 +47,7 @@ export const RegisterPage = () => {
             size="large"
           />
         </Form.Item>
+
         <Form.Item name="confirmPassword">
           <Input.Password
             prefix={<LockOutlined />}
@@ -54,6 +55,7 @@ export const RegisterPage = () => {
             size="large"
           />
         </Form.Item>
+
         <Form.Item>
           <Button
             type="primary"
@@ -66,14 +68,10 @@ export const RegisterPage = () => {
           </Button>
         </Form.Item>
       </Form>
+
       <Typography.Text>
         Already have an account? <Link to="/login">Login</Link>
       </Typography.Text>
-      <div style={{ marginTop: 16 }}>
-        <Button block onClick={() => navigate("/blogs")}>
-          Back to Blogs
-        </Button>
-      </div>
     </div>
   );
 };

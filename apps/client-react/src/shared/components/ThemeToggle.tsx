@@ -11,6 +11,7 @@ export const ThemeToggle = () => {
       icon={isDark ? <Sun size={18} /> : <Moon size={18} />}
       onClick={toggleTheme}
       aria-label="Toggle theme"
+      style={{ color: "inherit" }}
     />
   );
 };

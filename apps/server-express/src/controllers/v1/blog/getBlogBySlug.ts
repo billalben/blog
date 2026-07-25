@@ -14,7 +14,11 @@ const getBlogBySlug = async (req: Request, res: Response) => {
 
     const user = await User.findById(userId).select("role").lean().exec();
 
-    const blog = await Blog.findOne({ slug: slug as string })
+    const blog = await Blog.findOneAndUpdate(
+      { slug: slug as string },
+      { $inc: { viewsCount: 1 } },
+      { new: true }
+    )
       .select("-banner.publicId -__v")
       .populate("author", "-createdAt -updatedAt -__v")
       .lean()

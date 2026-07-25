@@ -33,6 +33,7 @@ export const BlogsListPage = () => {
   return (
     <div>
       <Typography.Title level={2}>Blogs</Typography.Title>
+
       <Row gutter={[16, 16]}>
         {data.data.map((blog) => (
           <Col key={blog._id} xs={24} sm={12} lg={8}>
@@ -81,6 +82,7 @@ export const BlogsListPage = () => {
           </Col>
         ))}
       </Row>
+
       {data.meta.count > pageSize && (
         <div style={{ textAlign: "center", marginTop: 24 }}>
           <Pagination

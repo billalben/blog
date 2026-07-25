@@ -1,5 +1,5 @@
-import { Link, useNavigate } from "react-router-dom";
-import { Form, Input, Button, Typography, Space } from "antd";
+import { Link } from "react-router-dom";
+import { Form, Input, Button, Typography } from "antd";
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
 import { loginSchema } from "@/features/auth/schemas/auth.schema";
 import { useLoginMutation } from "@/features/auth/mutations/auth.mutations";
@@ -7,7 +7,6 @@ import { zodToFieldErrors } from "@/shared/lib/zod-helper";
 
 export const LoginPage = () => {
   const mutation = useLoginMutation();
-  const navigate = useNavigate();
   const [form] = Form.useForm();
 
   const onFinish = (values: unknown) => {
@@ -29,6 +28,7 @@ export const LoginPage = () => {
   return (
     <div style={{ maxWidth: 400, margin: "80px auto" }}>
       <Typography.Title level={2}>Login</Typography.Title>
+
       <Form
         form={form}
         layout="vertical"
@@ -45,6 +45,7 @@ export const LoginPage = () => {
             size="large"
           />
         </Form.Item>
+
         <Form.Item>
           <Button
             type="primary"
@@ -57,17 +58,10 @@ export const LoginPage = () => {
           </Button>
         </Form.Item>
       </Form>
+
       <Typography.Text>
         Don&apos;t have an account? <Link to="/register">Register</Link>
       </Typography.Text>
-
-      {mutation.isIdle && (
-        <Space direction="vertical" style={{ marginTop: 16, width: "100%" }}>
-          <Button block onClick={() => navigate("/blogs")}>
-            Back to Blogs
-          </Button>
-        </Space>
-      )}
     </div>
   );
 };
