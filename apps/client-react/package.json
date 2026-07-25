@@ -13,12 +13,15 @@
     "knip:md": "knip --reporter markdown > knip-report.md"
   },
   "dependencies": {
+    "@ant-design/icons": "^6.3.2",
     "@tanstack/react-query": "^5.101.4",
     "antd": "^6.5.2",
     "axios": "^1.18.1",
     "lucide-react": "^1.26.0",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "react-router-dom": "^7.18.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

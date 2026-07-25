@@ -14,6 +14,8 @@ const window = new JSDOM("").window;
 const domPurify = DOMPurify(window);
 
 const createBlog = async (req: Request, res: Response) => {
+  console.log(req.body);
+
   try {
     const { title, content, status, banner }: TBlogData = req.body;
     const userId = req.userId;
