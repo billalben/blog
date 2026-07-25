@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Form, Input, Button, Typography } from "antd";
+import { Form, Input, Button, Typography, Card, Flex } from "antd";
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
 import { registerSchema } from "@/features/auth/schemas/auth.schema";
 import { useRegisterMutation } from "@/features/auth/mutations/auth.mutations";
@@ -28,50 +28,53 @@ export const RegisterPage = () => {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "80px auto" }}>
-      <Typography.Title level={2}>Register</Typography.Title>
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={onFinish}
-        autoComplete="off"
-      >
-        <Form.Item name="email">
-          <Input prefix={<MailOutlined />} placeholder="Email" size="large" />
-        </Form.Item>
+    <Flex justify="center" align="center" style={{ height: "100%" }}>
+      <Card style={{ width: 400 }} title="Blog">
+        <Typography.Title
+          level={3}
+          style={{ textAlign: "center", marginBottom: 24 }}
+        >
+          Register
+        </Typography.Title>
 
-        <Form.Item name="password">
-          <Input.Password
-            prefix={<LockOutlined />}
-            placeholder="Password"
-            size="large"
-          />
-        </Form.Item>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          autoComplete="off"
+          size="large"
+        >
+          <Form.Item name="email">
+            <Input prefix={<MailOutlined />} placeholder="Email" />
+          </Form.Item>
 
-        <Form.Item name="confirmPassword">
-          <Input.Password
-            prefix={<LockOutlined />}
-            placeholder="Confirm password"
-            size="large"
-          />
-        </Form.Item>
+          <Form.Item name="password">
+            <Input.Password prefix={<LockOutlined />} placeholder="Password" />
+          </Form.Item>
 
-        <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            loading={mutation.isPending}
-            block
-            size="large"
-          >
-            Register
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item name="confirmPassword">
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="Confirm password"
+            />
+          </Form.Item>
 
-      <Typography.Text>
-        Already have an account? <Link to="/login">Login</Link>
-      </Typography.Text>
-    </div>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={mutation.isPending}
+              block
+            >
+              Register
+            </Button>
+          </Form.Item>
+        </Form>
+
+        <Typography.Text style={{ display: "block", textAlign: "center" }}>
+          Already have an account? <Link to="/login">Login</Link>
+        </Typography.Text>
+      </Card>
+    </Flex>
   );
 };

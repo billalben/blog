@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Form, Input, Button, Typography } from "antd";
+import { Form, Input, Button, Typography, Card, Flex } from "antd";
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
 import { loginSchema } from "@/features/auth/schemas/auth.schema";
 import { useLoginMutation } from "@/features/auth/mutations/auth.mutations";
@@ -26,42 +26,45 @@ export const LoginPage = () => {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "80px auto" }}>
-      <Typography.Title level={2}>Login</Typography.Title>
+    <Flex justify="center" align="center" style={{ height: "100%" }}>
+      <Card style={{ width: 400 }} title="Blog">
+        <Typography.Title
+          level={3}
+          style={{ textAlign: "center", marginBottom: 24 }}
+        >
+          Login
+        </Typography.Title>
 
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={onFinish}
-        autoComplete="off"
-      >
-        <Form.Item name="email">
-          <Input prefix={<MailOutlined />} placeholder="Email" size="large" />
-        </Form.Item>
-        <Form.Item name="password">
-          <Input.Password
-            prefix={<LockOutlined />}
-            placeholder="Password"
-            size="large"
-          />
-        </Form.Item>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          autoComplete="off"
+          size="large"
+        >
+          <Form.Item name="email">
+            <Input prefix={<MailOutlined />} placeholder="Email" />
+          </Form.Item>
+          <Form.Item name="password">
+            <Input.Password prefix={<LockOutlined />} placeholder="Password" />
+          </Form.Item>
 
-        <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            loading={mutation.isPending}
-            block
-            size="large"
-          >
-            Login
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={mutation.isPending}
+              block
+            >
+              Login
+            </Button>
+          </Form.Item>
+        </Form>
 
-      <Typography.Text>
-        Don&apos;t have an account? <Link to="/register">Register</Link>
-      </Typography.Text>
-    </div>
+        <Typography.Text style={{ display: "block", textAlign: "center" }}>
+          Don&apos;t have an account? <Link to="/register">Register</Link>
+        </Typography.Text>
+      </Card>
+    </Flex>
   );
 };
