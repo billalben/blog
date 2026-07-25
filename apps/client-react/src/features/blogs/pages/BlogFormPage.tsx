@@ -1,6 +1,15 @@
 import { useState, useMemo, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Typography, Form, Input, Select, Upload, Button, Space, Image } from "antd";
+import {
+  Typography,
+  Form,
+  Input,
+  Select,
+  Upload,
+  Button,
+  Card,
+  Image,
+} from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import { blogBySlugQueryOptions } from "@/features/blogs/queries/blogs.queryOptions";
@@ -120,95 +129,93 @@ export const BlogFormPage = () => {
   const existingBannerUrl = blog?.banner?.url;
 
   return (
-    <div style={{ maxWidth: 800, margin: "0 auto" }}>
-      <Typography.Title level={2}>
-        {isEdit ? "Edit Blog" : "New Blog"}
-      </Typography.Title>
-
-      <Form form={form} layout="vertical" onFinish={onFinish}>
-        <Form.Item
-          name="title"
-          label="Title"
-          rules={[{ required: true, message: "Title is required" }]}
-        >
-          <Input placeholder="Blog title" maxLength={BLOG.TITLE_MAX} />
-        </Form.Item>
-
-        <Form.Item
-          name="content"
-          label="Content"
-          rules={[{ required: true, message: "Content is required" }]}
-        >
-          <TextArea
-            rows={12}
-            placeholder="Write your blog content..."
-            showCount
-          />
-        </Form.Item>
-
-        <Form.Item name="status" label="Status">
-          <Select placeholder="Select status" allowClear>
-            <Select.Option value="draft">Draft</Select.Option>
-            <Select.Option value="published">Published</Select.Option>
-          </Select>
-        </Form.Item>
-
-        <Form.Item label="Banner Image">
-          {previewUrl ? (
-            <div style={{ marginBottom: 12 }}>
-              <Image
-                src={previewUrl}
-                alt="Banner preview"
-                width={300}
-                style={{ borderRadius: 8 }}
-              />
-            </div>
-          ) : existingBannerUrl && !bannerFile ? (
-            <div style={{ marginBottom: 12 }}>
-              <Image
-                src={existingBannerUrl}
-                alt="Current banner"
-                width={300}
-                style={{ borderRadius: 8 }}
-              />
-            </div>
-          ) : null}
-
-          <Upload
-            beforeUpload={handleUpload}
-            maxCount={1}
-            accept="image/*"
-            fileList={
-              bannerFile
-                ? [
-                    {
-                      uid: "-1",
-                      name: bannerFile.name,
-                      status: "done",
-                    } as never,
-                  ]
-                : []
-            }
-            onRemove={() => setBannerFile(null)}
+    <div style={{ maxWidth: 992, margin: "0 auto" }}>
+      <Card title={isEdit ? "Edit Blog" : "New Blog"}>
+        <Form form={form} layout="vertical" onFinish={onFinish}>
+          <Form.Item
+            name="title"
+            label="Title"
+            rules={[{ required: true, message: "Title is required" }]}
           >
-            <Button icon={<UploadOutlined />}>
-              {isEdit ? "Replace Banner" : "Upload Banner"}
-            </Button>
-          </Upload>
-          <Text type="secondary" style={{ display: "block", marginTop: 4 }}>
-            Max {BLOG.BANNER_MAX_MB}MB. Image file.
-          </Text>
-        </Form.Item>
+            <Input placeholder="Blog title" maxLength={BLOG.TITLE_MAX} />
+          </Form.Item>
 
-        <Form.Item>
-          <Space>
+          <Form.Item
+            name="content"
+            label="Content"
+            rules={[{ required: true, message: "Content is required" }]}
+          >
+            <TextArea
+              rows={12}
+              placeholder="Write your blog content..."
+              showCount
+            />
+          </Form.Item>
+
+          <Form.Item name="status" label="Status">
+            <Select placeholder="Select status" allowClear>
+              <Select.Option value="draft">Draft</Select.Option>
+              <Select.Option value="published">Published</Select.Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item label="Banner Image">
+            {previewUrl ? (
+              <div style={{ marginBottom: 12 }}>
+                <Image
+                  src={previewUrl}
+                  alt="Banner preview"
+                  width={300}
+                  style={{ borderRadius: 8 }}
+                />
+              </div>
+            ) : existingBannerUrl && !bannerFile ? (
+              <div style={{ marginBottom: 12 }}>
+                <Image
+                  src={existingBannerUrl}
+                  alt="Current banner"
+                  width={300}
+                  style={{ borderRadius: 8 }}
+                />
+              </div>
+            ) : null}
+
+            <Upload
+              beforeUpload={handleUpload}
+              maxCount={1}
+              accept="image/*"
+              fileList={
+                bannerFile
+                  ? [
+                      {
+                        uid: "-1",
+                        name: bannerFile.name,
+                        status: "done",
+                      } as never,
+                    ]
+                  : []
+              }
+              onRemove={() => setBannerFile(null)}
+            >
+              <Button icon={<UploadOutlined />}>
+                {isEdit ? "Replace Banner" : "Upload Banner"}
+              </Button>
+            </Upload>
+            <Text type="secondary" style={{ display: "block", marginTop: 4 }}>
+              Max {BLOG.BANNER_MAX_MB}MB. Image file.
+            </Text>
+          </Form.Item>
+
+          <Form.Item style={{ marginBottom: 0, textAlign: "right" }}>
+            <Button onClick={() => navigate(-1)} style={{ marginRight: 8 }}>
+              Cancel
+            </Button>
             <Button type="primary" htmlType="submit" loading={isPending}>
               {isEdit ? "Update" : "Create"}
             </Button>
-            <Button onClick={() => navigate(-1)}>Cancel</Button>
-          </Space>
-        </Form.Item>
-      </Form>
+          </Form.Item>
+        </Form>
+      </Card>
     </div>
   );
 };
