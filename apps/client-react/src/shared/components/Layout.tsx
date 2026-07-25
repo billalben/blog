@@ -125,8 +125,8 @@ export const AppLayout = () => {
           maxWidth: 1200,
           margin: "0 auto",
           width: "100%",
-          height: "calc(100vh - 64px)",
-          overflowY: "auto",
+          minHeight: "calc(100vh - 64px)",
+          height: "100%",
         }}
       >
         <Outlet />

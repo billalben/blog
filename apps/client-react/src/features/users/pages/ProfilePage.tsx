@@ -1,4 +1,4 @@
-import { Typography, Button, Popconfirm, Space } from "antd";
+import { Button, Popconfirm, Card } from "antd";
 import { useAuth } from "@/app/providers/use-auth";
 import { ProfileForm } from "@/features/users/components/ProfileForm";
 import { useDeleteCurrentUserMutation } from "@/features/users/mutations/users.mutations";
@@ -16,29 +16,26 @@ export const ProfilePage = () => {
     return <ErrorState message="User not found" onRetry={() => navigate(0)} />;
 
   return (
-    <div style={{ maxWidth: 600, margin: "0 auto" }}>
-      <Space
-        style={{
-          width: "100%",
-          justifyContent: "space-between",
-          marginBottom: 24,
-        }}
+    <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+      <Card
+        title="Profile"
+        extra={
+          <Popconfirm
+            title="Delete account"
+            description="This action cannot be undone. All your data will be permanently removed."
+            onConfirm={() => deleteMutation.mutate()}
+            okText="Delete"
+            okType="danger"
+            cancelText="Cancel"
+          >
+            <Button danger loading={deleteMutation.isPending}>
+              Delete Account
+            </Button>
+          </Popconfirm>
+        }
       >
-        <Typography.Title level={2}>Profile</Typography.Title>
-        <Popconfirm
-          title="Delete account"
-          description="This action cannot be undone. All your data will be permanently removed."
-          onConfirm={() => deleteMutation.mutate()}
-          okText="Delete"
-          okType="danger"
-          cancelText="Cancel"
-        >
-          <Button danger loading={deleteMutation.isPending}>
-            Delete Account
-          </Button>
-        </Popconfirm>
-      </Space>
-      <ProfileForm user={user} />
+        <ProfileForm user={user} />
+      </Card>
     </div>
   );
 };

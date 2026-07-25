@@ -1,4 +1,4 @@
-import { Form, Input, Button, Divider } from "antd";
+import { Form, Input, Button, Divider, Row, Col } from "antd";
 import {
   MailOutlined,
   UserOutlined,
@@ -6,6 +6,7 @@ import {
   GlobalOutlined,
   LinkedinOutlined,
   GithubOutlined,
+  XOutlined,
   FacebookOutlined,
   InstagramOutlined,
   YoutubeOutlined,
@@ -88,47 +89,118 @@ export const ProfileForm = ({ user }: Props) => {
         youtube: user.socialLinks?.youtube || "",
       }}
     >
-      <Form.Item name="email" label="Email">
-        <Input prefix={<MailOutlined />} />
-      </Form.Item>
-      <Form.Item name="username" label="Username">
-        <Input prefix={<UserOutlined />} />
-      </Form.Item>
-      <Form.Item name="firstName" label="First Name">
-        <Input />
-      </Form.Item>
-      <Form.Item name="lastName" label="Last Name">
-        <Input />
-      </Form.Item>
-      <Form.Item name="password" label="New Password (leave blank to keep)">
-        <Input.Password prefix={<LockOutlined />} placeholder="New password" />
-      </Form.Item>
+      <Row gutter={16}>
+        <Col xs={24} sm={12}>
+          <Form.Item name="firstName" label="First Name">
+            <Input placeholder="John" />
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={12}>
+          <Form.Item name="lastName" label="Last Name">
+            <Input placeholder="Doe" />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <Row gutter={16}>
+        <Col xs={24} sm={12}>
+          <Form.Item name="email" label="Email">
+            <Input prefix={<MailOutlined />} placeholder="john@example.com" />
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={12}>
+          <Form.Item name="username" label="Username">
+            <Input prefix={<UserOutlined />} placeholder="johndoe" />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <Row gutter={16}>
+        <Col xs={24} sm={12}>
+          <Form.Item
+            name="password"
+            label="New Password"
+            help="Leave blank to keep current"
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="New password"
+            />
+          </Form.Item>
+        </Col>
+      </Row>
 
       <Divider>Social Links</Divider>
 
-      <Form.Item name="website" label="Website">
-        <Input prefix={<GlobalOutlined />} placeholder="https://..." />
-      </Form.Item>
-      <Form.Item name="linkedin" label="LinkedIn">
-        <Input prefix={<LinkedinOutlined />} placeholder="https://..." />
-      </Form.Item>
-      <Form.Item name="github" label="GitHub">
-        <Input prefix={<GithubOutlined />} placeholder="https://..." />
-      </Form.Item>
-      <Form.Item name="x" label="X (Twitter)">
-        <Input prefix={<GithubOutlined />} placeholder="https://..." />
-      </Form.Item>
-      <Form.Item name="facebook" label="Facebook">
-        <Input prefix={<FacebookOutlined />} placeholder="https://..." />
-      </Form.Item>
-      <Form.Item name="instagram" label="Instagram">
-        <Input prefix={<InstagramOutlined />} placeholder="https://..." />
-      </Form.Item>
-      <Form.Item name="youtube" label="YouTube">
-        <Input prefix={<YoutubeOutlined />} placeholder="https://..." />
-      </Form.Item>
+      <Row gutter={16}>
+        <Col xs={24} sm={12}>
+          <Form.Item name="website" label="Website">
+            <Input
+              prefix={<GlobalOutlined />}
+              placeholder="https://yoursite.com"
+            />
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={12}>
+          <Form.Item name="github" label="GitHub">
+            <Input
+              prefix={<GithubOutlined />}
+              placeholder="https://github.com/username"
+            />
+          </Form.Item>
+        </Col>
+      </Row>
 
-      <Form.Item>
+      <Row gutter={16}>
+        <Col xs={24} sm={12}>
+          <Form.Item name="linkedin" label="LinkedIn">
+            <Input
+              prefix={<LinkedinOutlined />}
+              placeholder="https://linkedin.com/in/username"
+            />
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={12}>
+          <Form.Item name="x" label="X (Twitter)">
+            <Input
+              prefix={<XOutlined />}
+              placeholder="https://x.com/username"
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <Row gutter={16}>
+        <Col xs={24} sm={12}>
+          <Form.Item name="facebook" label="Facebook">
+            <Input
+              prefix={<FacebookOutlined />}
+              placeholder="https://facebook.com/username"
+            />
+          </Form.Item>
+        </Col>
+        <Col xs={24} sm={12}>
+          <Form.Item name="instagram" label="Instagram">
+            <Input
+              prefix={<InstagramOutlined />}
+              placeholder="https://instagram.com/username"
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <Row gutter={16}>
+        <Col xs={24} sm={12}>
+          <Form.Item name="youtube" label="YouTube">
+            <Input
+              prefix={<YoutubeOutlined />}
+              placeholder="https://youtube.com/@channel"
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <Form.Item style={{ textAlign: "right" }}>
         <Button type="primary" htmlType="submit" loading={mutation.isPending}>
           Save Changes
         </Button>
