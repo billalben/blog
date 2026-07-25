@@ -41,10 +41,12 @@ export function useUpdateBlogMutation() {
     mutationFn: ({
       blogId,
       body,
+      bannerFile,
     }: {
       blogId: string;
       body: Parameters<typeof blogsApi.updateBlog>[1];
-    }) => blogsApi.updateBlog(blogId, body),
+      bannerFile?: File;
+    }) => blogsApi.updateBlog(blogId, body, bannerFile),
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: blogKeys.lists() });
       queryClient.invalidateQueries({

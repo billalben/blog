@@ -65,8 +65,10 @@ router.put(
   "/:blogId",
   authenticate,
   authorize(["admin"]),
+  upload.single("banner_image"),
   validate({ params: UpdateBlogByIdParamsSchema }),
   validate({ body: UpdateBlogBodySchema }),
+  uploadBlogBanner("update"),
   updateBlog
 );
 

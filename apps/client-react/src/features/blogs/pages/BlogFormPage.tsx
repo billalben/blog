@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Typography, Form, Input, Select, Upload, Button, Space } from "antd";
+import { useState, useMemo, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Typography, Form, Input, Select, Upload, Button, Space, Image } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import { blogBySlugQueryOptions } from "@/features/blogs/queries/blogs.queryOptions";
@@ -20,8 +20,7 @@ const { TextArea } = Input;
 const { Text } = Typography;
 
 export const BlogFormPage = () => {
-  const slug =
-    new URLSearchParams(window.location.search).get("slug") || undefined;
+  const { slug } = useParams<{ slug: string }>();
   const isEdit = !!slug;
   const navigate = useNavigate();
 
@@ -37,6 +36,21 @@ export const BlogFormPage = () => {
 
   const [form] = Form.useForm();
   const [bannerFile, setBannerFile] = useState<File | null>(null);
+
+  const previewUrl = useMemo(
+    () => (bannerFile ? URL.createObjectURL(bannerFile) : null),
+    [bannerFile]
+  );
+
+  useEffect(() => {
+    if (isEdit && blog) {
+      form.setFieldsValue({
+        title: blog.title,
+        content: blog.content,
+        status: blog.status,
+      });
+    }
+  }, [isEdit, blog, form]);
 
   const onFinish = (values: unknown) => {
     if (isEdit && blog) {
@@ -65,6 +79,7 @@ export const BlogFormPage = () => {
           content?: string;
           status?: "draft" | "published";
         },
+        bannerFile: bannerFile || undefined,
       });
     } else {
       const result = createBlogSchema.safeParse(values);
@@ -102,26 +117,15 @@ export const BlogFormPage = () => {
 
   if (isEdit && blogLoading) return <Spinner />;
 
+  const existingBannerUrl = blog?.banner?.url;
+
   return (
     <div style={{ maxWidth: 800, margin: "0 auto" }}>
       <Typography.Title level={2}>
         {isEdit ? "Edit Blog" : "New Blog"}
       </Typography.Title>
 
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={onFinish}
-        initialValues={
-          isEdit && blog
-            ? {
-                title: blog.title,
-                content: blog.content,
-                status: blog.status,
-              }
-            : undefined
-        }
-      >
+      <Form form={form} layout="vertical" onFinish={onFinish}>
         <Form.Item
           name="title"
           label="Title"
@@ -149,32 +153,52 @@ export const BlogFormPage = () => {
           </Select>
         </Form.Item>
 
-        {!isEdit && (
-          <Form.Item label="Banner Image">
-            <Upload
-              beforeUpload={handleUpload}
-              maxCount={1}
-              accept="image/*"
-              fileList={
-                bannerFile
-                  ? [
-                      {
-                        uid: "-1",
-                        name: bannerFile.name,
-                        status: "done",
-                      } as never,
-                    ]
-                  : []
-              }
-              onRemove={() => setBannerFile(null)}
-            >
-              <Button icon={<UploadOutlined />}>Upload Banner</Button>
-            </Upload>
-            <Text type="secondary">
-              Max {BLOG.BANNER_MAX_MB}MB. Image file.
-            </Text>
-          </Form.Item>
-        )}
+        <Form.Item label="Banner Image">
+          {previewUrl ? (
+            <div style={{ marginBottom: 12 }}>
+              <Image
+                src={previewUrl}
+                alt="Banner preview"
+                width={300}
+                style={{ borderRadius: 8 }}
+              />
+            </div>
+          ) : existingBannerUrl && !bannerFile ? (
+            <div style={{ marginBottom: 12 }}>
+              <Image
+                src={existingBannerUrl}
+                alt="Current banner"
+                width={300}
+                style={{ borderRadius: 8 }}
+              />
+            </div>
+          ) : null}
+
+          <Upload
+            beforeUpload={handleUpload}
+            maxCount={1}
+            accept="image/*"
+            fileList={
+              bannerFile
+                ? [
+                    {
+                      uid: "-1",
+                      name: bannerFile.name,
+                      status: "done",
+                    } as never,
+                  ]
+                : []
+            }
+            onRemove={() => setBannerFile(null)}
+          >
+            <Button icon={<UploadOutlined />}>
+              {isEdit ? "Replace Banner" : "Upload Banner"}
+            </Button>
+          </Upload>
+          <Text type="secondary" style={{ display: "block", marginTop: 4 }}>
+            Max {BLOG.BANNER_MAX_MB}MB. Image file.
+          </Text>
+        </Form.Item>
 
         <Form.Item>
           <Space>

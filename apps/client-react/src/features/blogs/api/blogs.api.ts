@@ -20,8 +20,21 @@ export const blogsApi = {
 
   updateBlog: (
     blogId: string,
-    body: { title?: string; content?: string; status?: "draft" | "published" }
-  ) => api.put<ApiResponse<{ blog: Blog }>>(`/blogs/${blogId}`, body),
+    body: { title?: string; content?: string; status?: "draft" | "published" },
+    bannerFile?: File
+  ) => {
+    if (bannerFile) {
+      const formData = new FormData();
+      if (body.title) formData.append("title", body.title);
+      if (body.content) formData.append("content", body.content);
+      if (body.status) formData.append("status", body.status);
+      formData.append("banner_image", bannerFile);
+      return api.put<ApiResponse<{ blog: Blog }>>(`/blogs/${blogId}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    }
+    return api.put<ApiResponse<{ blog: Blog }>>(`/blogs/${blogId}`, body);
+  },
 
   deleteBlog: (blogId: string) => api.delete(`/blogs/${blogId}`),
 };
