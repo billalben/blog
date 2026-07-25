@@ -52,6 +52,17 @@ const getAllBlogsbyUser = async (req: Request, res: Response) => {
 
     const meta = paginate(count, page, page_size, req);
 
+    const normalized = blogs.map((blog) => {
+      const rawBlog = blog as unknown as Record<string, unknown>;
+      const author = rawBlog.author as
+        | { _id: { toString(): string }; username: string; email: string; role: string }
+        | undefined;
+      const normalizedAuthor = author
+        ? { id: author._id.toString(), username: author.username, email: author.email, role: author.role }
+        : rawBlog.author;
+      return { ...rawBlog, author: normalizedAuthor };
+    });
+
     logger.info("Retrieved all blogs by user successfully", {
       userId: req.userId,
       ip: req.ip,
@@ -60,7 +71,7 @@ const getAllBlogsbyUser = async (req: Request, res: Response) => {
 
     return paginatedResponse(
       res,
-      blogs,
+      normalized,
       meta,
       "Blogs by user retrieved successfully"
     );

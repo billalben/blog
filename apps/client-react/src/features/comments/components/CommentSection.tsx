@@ -89,7 +89,7 @@ export const CommentSection = ({ blogId }: Props) => {
           renderItem={(comment) => (
             <List.Item
               actions={
-                user && (user._id === comment.userId || user.role === "admin")
+                user && (user.id === comment.userId || user.role === "admin")
                   ? [
                       <Popconfirm
                         key="delete"

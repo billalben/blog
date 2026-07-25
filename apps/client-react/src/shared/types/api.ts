@@ -11,7 +11,7 @@ type SocialLinks = {
 };
 
 export type User = {
-  _id: string;
+  id: string;
   username: string;
   email: string;
   role: Role;
@@ -23,7 +23,7 @@ export type User = {
 };
 
 type UserPublic = {
-  _id: string;
+  id: string;
   username: string;
   email: string;
   role: Role;

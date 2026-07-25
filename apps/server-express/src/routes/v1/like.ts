@@ -11,8 +11,16 @@ import {
 
 import likeBlog from "@/controllers/v1/like/likeBlog";
 import unlikeBlog from "@/controllers/v1/like/unlikeBlog";
+import checkLike from "@/controllers/v1/like/checkLike";
 
 const router = Router();
+
+router.get(
+  "/blog/:blogId",
+  authenticate,
+  authorize(["admin", "user"]),
+  checkLike
+);
 
 router.post(
   "/blog/:blogId",

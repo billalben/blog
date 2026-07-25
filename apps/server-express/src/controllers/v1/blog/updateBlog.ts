@@ -24,7 +24,10 @@ const updateBlog = async (req: Request, res: Response) => {
     const blogId = req.params.blogId;
 
     const user = await User.findById(userId).select("role").lean().exec();
-    const blog = await Blog.findById(blogId).select("-__v").exec();
+    const blog = await Blog.findById(blogId)
+      .select("-__v")
+      .populate("author", "-createdAt -updatedAt -__v")
+      .exec();
 
     if (!blog) {
       logger.error("Blog not found", {
@@ -61,6 +64,15 @@ const updateBlog = async (req: Request, res: Response) => {
 
     await blog.save();
 
+    const blogJson = blog.toJSON() as unknown as Record<string, unknown>;
+    const author = blogJson.author as
+      | { _id: { toString(): string }; username: string; email: string; role: string }
+      | undefined;
+    const normalizedAuthor = author
+      ? { id: author._id.toString(), username: author.username, email: author.email, role: author.role }
+      : blogJson.author;
+    const normalized = { ...blogJson, author: normalizedAuthor };
+
     logger.info("Blog updated successfully", {
       userId: req.userId,
       ip: req.ip,
@@ -71,7 +83,7 @@ const updateBlog = async (req: Request, res: Response) => {
       banner: blog.banner,
     });
 
-    return successResponse(res, { blog }, "Blog updated successfully", 200);
+    return successResponse(res, { blog: normalized }, "Blog updated successfully", 200);
   } catch (error) {
     logger.error("Error updating blog post:", error);
 

@@ -17,11 +17,13 @@ function getErrorMessage(error: unknown): string {
 
 export function useUpdateCurrentUserMutation() {
   const queryClient = useQueryClient();
+  const { setUser } = useAuth();
   const { message } = App.useApp();
 
   return useMutation({
     mutationFn: usersApi.updateCurrentUser,
     onSuccess: (res) => {
+      setUser(res.data.data.user);
       queryClient.invalidateQueries({ queryKey: userKeys.current() });
       message.success(res.data.message);
     },

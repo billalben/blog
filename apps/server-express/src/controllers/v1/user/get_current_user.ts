@@ -14,7 +14,13 @@ const getCurrentUser = async (req: Request, res: Response) => {
       return errorResponse(res, "User not found", 404);
     }
 
-    return successResponse(res, { user }, "Current user fetched successfully");
+    const { _id, ...rest } = user;
+
+    return successResponse(
+      res,
+      { user: { id: _id.toString(), ...rest } },
+      "Current user fetched successfully"
+    );
   } catch (error) {
     logger.error("Error fetching current user:", error);
     return errorResponse(res, "Internal Server Error");

@@ -19,6 +19,11 @@ const getAllUsers = async (req: Request, res: Response) => {
       User.countDocuments(),
     ]);
 
+    const normalized = users.map(({ _id, ...rest }) => ({
+      id: _id.toString(),
+      ...rest,
+    }));
+
     const totalPages = Math.ceil(count / page_size);
 
     if (page > totalPages) {
@@ -33,7 +38,7 @@ const getAllUsers = async (req: Request, res: Response) => {
       totalUsers: count,
     });
 
-    return paginatedResponse(res, users, meta, "Users retrieved successfully");
+    return paginatedResponse(res, normalized, meta, "Users retrieved successfully");
   } catch (error) {
     logger.error("Failed to retrieve users", {
       userId: req.userId,

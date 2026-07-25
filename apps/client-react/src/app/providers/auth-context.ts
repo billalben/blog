@@ -6,6 +6,7 @@ export type AuthCtx = {
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (accessToken: string, user: User) => void;
+  setUser: (user: User) => void;
   logout: () => Promise<void>;
 };
 

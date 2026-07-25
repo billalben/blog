@@ -41,7 +41,7 @@ export const BlogDetailPage = () => {
   if (!data) return <ErrorState message="Blog not found" />;
 
   const blog = data.blog;
-  const canEdit = user?.role === "admin" || user?._id === blog.author._id;
+  const canEdit = user?.role === "admin" || user?.id === blog.author.id;
 
   return (
     <div style={{ maxWidth: 800, margin: "0 auto" }}>

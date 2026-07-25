@@ -14,8 +14,6 @@ const window = new JSDOM("").window;
 const domPurify = DOMPurify(window);
 
 const createBlog = async (req: Request, res: Response) => {
-  console.log(req.body);
-
   try {
     const { title, content, status, banner }: TBlogData = req.body;
     const userId = req.userId;
@@ -31,10 +29,19 @@ const createBlog = async (req: Request, res: Response) => {
     });
 
     await newBlog.save();
+    await newBlog.populate("author", "-createdAt -updatedAt -__v");
+
+    const blog = newBlog.toJSON() as unknown as Record<string, unknown>;
+    const author = blog.author as
+      | { _id: { toString(): string }; username: string; email: string; role: string }
+      | undefined;
+    const normalizedAuthor = author
+      ? { id: author._id.toString(), username: author.username, email: author.email, role: author.role }
+      : undefined;
 
     return successResponse(
       res,
-      { blog: newBlog },
+      { blog: { ...blog, author: normalizedAuthor } },
       "Blog post created successfully",
       201
     );

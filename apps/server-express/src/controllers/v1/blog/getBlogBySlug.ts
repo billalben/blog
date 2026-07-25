@@ -44,7 +44,16 @@ const getBlogBySlug = async (req: Request, res: Response) => {
       slug: slug,
     });
 
-    return successResponse(res, { blog }, "Blog retrieved successfully");
+    const rawBlog = blog as unknown as Record<string, unknown>;
+    const author = rawBlog.author as
+      | { _id: { toString(): string }; username: string; email: string; role: string }
+      | undefined;
+    const normalizedAuthor = author
+      ? { id: author._id.toString(), username: author.username, email: author.email, role: author.role }
+      : rawBlog.author;
+    const normalized = { ...rawBlog, author: normalizedAuthor };
+
+    return successResponse(res, { blog: normalized }, "Blog retrieved successfully");
   } catch (error) {
     logger.error("Failed to retrieve blog by slug", {
       userId: req.userId,
